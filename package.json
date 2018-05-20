@@ -1,0 +1,18 @@
+{
+  "name": "NestedJS",
+  "version": "1.0.0",
+  "description": "Works with deep nested arrays",
+  "main": "index.js",
+  "author": "Cyprien GLEPIN <betaweb34@gmail.com>",
+  "license": "MIT",
+  "repository": "https://github.com/betaWeb/NestedJS.git",
+  "scripts": {
+    "dev": "parcel -p 3000 public/index.html --no-hmr --out-dir ./public/dist",
+    "build": "parcel build index --out-dir build --out-file Nested.min.js"
+  },
+  "dependencies": {
+    "babel": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "parcel-bundler": "^1.8.1"
+  }
+}
