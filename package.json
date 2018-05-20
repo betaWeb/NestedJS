@@ -1,7 +1,7 @@
 {
   "name": "NestedJS",
   "version": "1.0.0",
-  "description": "Works with deep nested arrays",
+  "description": "Deal with deep nested arrays in JavaScript",
   "main": "index.js",
   "author": "Cyprien GLEPIN <betaweb34@gmail.com>",
   "license": "MIT",
