@@ -2,7 +2,129 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c5d9863a-c4e8-4778-9a60-d81c71cc648f" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/03150457c2292a43b828857bd0304244.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/037408c85d517b27609b339dc1838426.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/04018746b366ec6a4458ad761a9bd7d0.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/06d4631048ef109aec3fc27d8083054b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/0c667fb42caa31627549f81b3606e004.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/1077e2366f081f86397633964d0cd8d7.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/10e3e709dbe1fbc6e94ad387d7d15333.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/117f1edcc1f0696924aa32081a364407.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/1241320ea88883d4c44d0b245321b03e.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/151d4ff410e929e33b83f76650179137.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/17abdfcf95f6b310978da7eaeb33d536.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/1c44f782b72aa99a53510a0c23cb48de.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/223a12f96ef2d44a7ce5f45ee04a3d58.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/22ae8ca22ee1dca0ade0853456655030.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/236463a3f7fdd4cb7f9722e4e23ee8fa.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/2395ba7e28d1e53164506d4660c8d3ca.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/283a25b5013278ff96fdad2d481ce762.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/28ca59ae5ba9993983f91da0cd68b436.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/2a25881d2c730146e55aa69d75dfc5fe.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/2bcbe17c97485e4df265eff989751a2a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/2dc39ca56263e3fab8b321cc336687fe.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/2dff7afe0dd10e1f81fafae885a7b708.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/2f3b9a068d63eb6f021fbf095d5cc2e9.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/306a2a753cb6ad3b90bf1c81c810cc8e.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/33a393deb32c64687d133f9da424c909.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/36c2d351ed64d4050b091309b1728610.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/3889ac86bb8f8625fb1b5eb295ea3720.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/3c78b16f5d4250af9c8589730c24911f.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/3fedef7f0ba0b0a7433810bde2d33fe7.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/4128afbc4c706ba7d3ed0416134a487c.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/41dc601ad6309f007d5e8ed660fd8b10.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/432a6241fe8713429e213d92d280ad26.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/4707b01966136f736137091022db47b2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/4775687be7edb31ba85d351d6e066530.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/482baa91334ea48d767d86b2184ac970.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/48da91c8800b81f848fc6735fcd5e0d4.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/490558dbd43beebc1de643a596b00cc4.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/4b1f93615d9d627f82c0d9ba1fbc121f.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/4cc99a9a2c34899059d017485c1bc26d.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/4ccbd47b0dc4ae6b45b730c820dc4f5e.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/4e6f746349993d19d088975e9b1698ad.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/4ed06e8df7b01109bec9abd8fadfd959.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/4f500de9b5c9e0caa8ed00168510c03f.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/52f76d619f074556c6f7bd5292d2d40b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/53ab7808083aaee6deaa1ebd32dec344.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/56adc74d8a58c6c53fbbfc793a137201.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/595df5740d8beff042b6e92400678fce.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/5ed59ae6761d1463a86815df953a57df.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/5ff483cb8991f655f14d1d64d88749aa.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/60e89ba81861e66f999d29dc577fc9c9.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/6185b28f6cf7bcb96a1be183457f8b6a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/63ac47be7e08c733b9aa4bd145cc8d1d.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/6571f2f0ded60e52db3b247eb3c4cef4.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/6b98d84377187028c5a3c002f9fe04e5.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/6dc870e30ea1bd7a7dd2b0410cea07ec.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/6dfff47ae79158aa3b69581c7f84db16.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/6e48bcbfec1f09167719044acfcb431f.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/751eea37177fabae91c3066c44480491.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/76ab0592f94664aa7b8649ad10f542e5.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/77e031602a73b2f277ef6faccc36f89b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/800df4fbc5753c19c1c4b322ac716155.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/83bee212bec0d0b4204c4155836b0616.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/84724afe7e989aa82595bafe92244c42.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/8a37386e88b4082fd8dfd877f484b332.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/8d0acc0b814bb513bf15182601882141.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/8d1a423d2f5ca04cb41d745fe2ffaeee.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/8e3bdbb760d8512933c2385ba09f36bd.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/8f0bce88c93ade7d49e2c2400d075fc6.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/968104aa3a0de563c919c18d145d4dd9.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/9685bb35cedd3d6c4cd34e0e312a75e1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/9750d1ca8de806f894475ea06646f1d7.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/99ec9c687a845d27ef24a88cfb1ec84e.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/9c8e29f08c5f4dbeb0b609a27ffca223.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/9f4885e930bcc4a565446e97c3536566.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/a19da97c031c583ae797442ba762dbf5.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/a26f7767d53400204f9fb9bca8ee155a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/a43d01c99c969290157e6cbe028b6720.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/a73bfc7ea0efab3e0493a03ba42dab9b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/a8951ea45970f61ed62b3991690a021d.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/ae23641dc9caa31b44e0d6471f255fbf.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/b1060cc6dd9e14e72ca5fc5b7992a01d.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/b26aee448169c10167deb99aa20da313.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/b29b6d05d7ab435f95443cedd4886a53.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/b2e24f8ae75b6fd0a0a0f02cc3991c05.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/b35a6f8cfbb2768adfd452bd079a28ac.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/b3c881a071657b59566f046c0106c917.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/b75d4dd0e06503ad63ad9338e3c21522.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/ba1627141b520e29e9e57b35c4618185.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/bde100fb62e77200fa7223083112e53d.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/c110f49beade7a95c3d84896841211ae.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/c1bdc3afdcd826b1dcee8570f84b8b2e.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/c2125220d0ddeb5c2b03fc1778a75dbf.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/c3145f49308a674a5ae5f5b934652444.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/c39e92bcae4c21da74e678b2e14191d1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/c627de923dea19febe00b867b0a83d55.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/c84d2076478210825b501f5a7b3fc6f0.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/cd348400b0baedb04512e92089c3445a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/ce658c8fffee6fbe6f98b082a59be686.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/ce74f8809ab6d55658a9ffa12054461b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/d4ab1633c11ea51b414ce27d73c803b6.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/d9227bb23c495ad07d1545295f04458b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/dc731b396531f1b1742164383c717c62.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/dd67195ad915243087c688e0a357b66d.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/e0f0907849332b8eeb987f68b6d26839.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/e47461a5de2059a7d9224e6966aebd95.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/e48b5b55ad3961614ca2f3a44bfa50bb.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/e64a8e5ff233fcc2b61d08325610c577.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/e817c3e330a29992a7b29bb59b13d085.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/e8cf7b821e65c0519afcc8395f18c240.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/ea1000d5fe60685606996d5259fe8add.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/eb933c72a74d9a27bd88f2bd532355d4.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/f9afb2e60c5fdcad7f9d99067cf8bd15.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/fa84d5c5f606aa0af4e3322370fe5907.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/fcb835886b0e207dc8da8bfd44a383b4.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache/fdd782599523bb70e2ebb84828b964ff.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLinters/jslint.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/nested.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -46,14 +168,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="readme.md" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/readme.md">
-              <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-                <state split_layout="SPLIT">
-                  <first_editor relative-caret-position="26">
-                    <caret line="1" column="69" lean-forward="true" selection-start-line="1" selection-start-column="69" selection-end-line="1" selection-end-column="69" />
-                  </first_editor>
-                  <second_editor />
+          <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/.gitignore">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="731">
+                  <caret line="62" column="7" lean-forward="true" selection-start-line="62" selection-start-column="7" selection-end-line="62" selection-end-column="7" />
                 </state>
               </provider>
             </entry>
@@ -125,8 +244,8 @@
         <option value="$PROJECT_DIR$/public/index.html" />
         <option value="$PROJECT_DIR$/index.js" />
         <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/readme.md" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -216,12 +335,12 @@
       <option name="presentableId" value="Default" />
       <updated>1526817233099</updated>
       <workItem from="1526817234232" duration="8890000" />
-      <workItem from="1526827767946" duration="7151000" />
+      <workItem from="1526827767946" duration="7402000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16041000" />
+    <option name="totallyTimeSpent" value="16292000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1920" y="34" width="2560" height="1046" extended-state="6" />
@@ -390,10 +509,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="9" selection-start-column="9" selection-end-column="9" />
+    <entry file="file://$PROJECT_DIR$/readme.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="26">
+            <caret line="1" column="69" lean-forward="true" selection-start-line="1" selection-start-column="69" selection-end-line="1" selection-end-column="69" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
@@ -404,13 +526,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/readme.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="26">
-            <caret line="1" column="69" lean-forward="true" selection-start-line="1" selection-start-column="69" selection-end-line="1" selection-end-column="69" />
-          </first_editor>
-          <second_editor />
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="62" column="7" lean-forward="true" selection-start-line="62" selection-start-column="7" selection-end-line="62" selection-end-column="7" />
         </state>
       </provider>
     </entry>
