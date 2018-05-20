@@ -60,5 +60,6 @@ typings/
 # next.js build output
 .next
 
-.idea/* .idea/*.xml
+.idea/*
+.idea/workspace.xml
 .cache/*
