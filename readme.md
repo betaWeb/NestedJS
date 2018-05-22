@@ -50,126 +50,136 @@ The created instance transform the collection and add several properties and met
  > To know the added properties on each node you must debug your collection, or you can simply browse it with a recursive loop.
 
 #### Methods
-Each node is now an instance of the NestedJS's `Node` class and has several methods :
+You can retrieve a node by his unique id :
+```JS
+    const node = tree.retrieveNode(/* __nodeid node unique id */)
+```
+
+This will returns a node which is an instance of the NestedJS's `Node` class. This class has several methods :
 
 - returns original properties of the node :
 ```JS
-    Node.properties
+    node.properties
 ```
 
 - returns node unique id :
 ```JS
-    Node.getId()
+    node.getId()
 ```
 
 - returns node parent unique id :
 ```JS
-    Node.getParentId()
+    node.getParentId()
 ```
 
 - returns next node unique id :
 ```JS
-    Node.getNextId()
+    node.getNextId()
 ```
 
 - returns previous node unique id :
 ```JS
-    Node.getPreviousId()
+    node.getPreviousId()
 ```
 
 - check if node property exists :
 ```JS
-    Node.hasProperty(key)
+    node.hasProperty(key)
 ```
 
 - returns node property if exists, defaultValue otherwise :
 ```JS
-    Node.getProperty(key, defaultValue)
+    node.getProperty(key, defaultValue)
 ```
 
 - set node's property :
 ```JS
-    Node.setProperty(key, value)
+    node.setProperty(key, value)
 ```
 
 - returns an array of previous nodes if exists, null otherwise :
 ```JS
-    Node.previousNodes()
+    node.previousNodes()
 ```
 
 - returns previous node if exists, null otherwise :
 ```JS
-    Node.previousNode()
+    node.previousNode()
 ```
 
 - returns true if the node has a predecessor, false otherwise :
 ```JS
-    Node.hasPreviousNode()
+    node.hasPreviousNode()
 ```
 
 - returns an array of next nodes if exists, null otherwise :
 ```JS
-    Node.nextNodes()
+    node.nextNodes()
 ```
 
 - returns next node if exists, null otherwise :
 ```JS
-    Node.nextNode()
+    node.nextNode()
 ```
 
 - returns true if the node has a successor, false otherwise :
 ```JS
-    Node.hasNextNode()
+    node.hasNextNode()
 ```
 
 - returns an array of siblings nodes if exists, null otherwise
 ```JS
-    Node.siblingsNodes()
+    node.siblingsNodes()
 ```
 
 - returns an array of child nodes :
 ```JS
-    Node.childNodes()
+    node.childNodes()
 ```
 
 - returns node's first child if it has, null otherwise :
 ```JS
-    Node.firstChild()
+    node.firstChild()
 ```
 
 - returns node's last child if is has, null otherwise :
 ```JS
-    Node.lastChild()
+    node.lastChild()
 ```
 
 - returns node's child by index if it has, null otherwise :
 ```JS
-    Node.nthChild()
+    node.nthChild()
 ```
 
 - return true if the node has children, false otherwise :
 ```JS
-    Node.hasChildNodes()
+    node.hasChildNodes()
 ```
 
 - returns parent node if exists, null otherwise :
 ```JS
-    Node.parentNode()
+    node.parentNode()
 ```
 
 - returns true if the node has an ancestor, false otherwise :
 ```JS
-    Node.hasParentNode()
+    node.hasParentNode()
 ```
 
 - returns current node breadcrumb :
 ```JS
-    Node.breadcrumb()
+    node.breadcrumb()
 ```
 
 - returns NestedJS instance :
 ```JS
-    Node.getTree()
+    node.getTree()
 ```
 
 > Each node original properties are preserved and are transferred as properties of the NestedJS's `Node` class.
+
+You also retrieve one or several nodes by a key/value couple search :
+```JS
+const nodes = tree.retrieveNodesBy('name', 'lorem')
+```

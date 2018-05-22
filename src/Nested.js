@@ -8,8 +8,6 @@ export default class Nested {
     constructor(data = []) {
         this.data = this.buildTree(data)
         this.currentNode = null
-        // this.prevNode = null
-        // this.nextNode = null
     }
 
     /**
@@ -25,8 +23,6 @@ export default class Nested {
         if (data === null) {
             data = this.data
             this.currentNode = null
-            // this.prevNode = null
-            // this.nextNode = null
         }
 
         let node = null
