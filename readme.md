@@ -5,7 +5,6 @@ Navigate into nested collections can be tricky, so NestedJS try to get it easier
 <br>
 
 ## Getting started
-------------------
 ### Installation
 #### Browser :
 Download the latest version of NestedJS and load the file `Nested.min.js` (on build folder) on your HTML page :
@@ -30,7 +29,7 @@ const NestedJS = require('nestedjs')
 import NestedJS from 'nestedjs'
 ```
 
-### Use
+### Usage
 #### Instanciation
 Once package loaded, NestedJS must ne instanciate with a nested collection.
 ```JS
@@ -47,6 +46,8 @@ The created instance transform the collection and add several properties and met
  - `__parentid` : tag the parent node id of a node if exists, null otherwise
  - `__previd` : tag the previous node id of a node if exists, null otherwise
  - `__nextid` : tag the next node id of a node if exists, null otherwise
+
+ > To know the added properties on each node you must debug your collection, or you can simply browse it with a recursive loop.
 
 #### Methods
 Each node is now an instance of the NestedJS's `Node` class and has several methods :
