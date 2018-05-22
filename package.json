@@ -11,7 +11,7 @@
   "homepage": "https://github.com/betaWeb/NestedJS#readme",
   "repository": {
     "type": "git",
-    "url":  "https://github.com/betaWeb/NestedJS.git"
+    "url": "https://github.com/betaWeb/NestedJS.git"
   },
   "keywords": [
     "javascript",
@@ -24,11 +24,15 @@
   ],
   "scripts": {
     "dev": "parcel -p 3000 public/index.html --no-hmr --out-dir ./public/dist",
-    "build": "parcel build index.js --out-dir build --out-file Nested.min.js"
+    "build": "parcel build index.js --out-dir build --out-file Nested.min.js",
+    "test": "./node_modules/.bin/mocha --reporter spec --watch"
   },
   "devDependencies": {
     "babel": "^6.23.0",
     "babel-preset-env": "^1.7.0",
-    "parcel-bundler": "^1.8.1"
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "parcel-bundler": "^1.8.1",
+    "sinon": "^5.0.7"
   }
 }

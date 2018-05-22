@@ -1,6 +1,6 @@
-import Node from '../src/Node'
+const Node = require('./Node')
 
-export default class Nested {
+class Nested {
 
     /**
      * @param {Array} data
@@ -163,3 +163,5 @@ export default class Nested {
     }
 
 }
+
+module.exports = Nested

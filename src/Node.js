@@ -1,6 +1,6 @@
 const PRIVATE_PROPERTIES = ['__nodeid', '__parentid', '__nextid', '__previd', '__tree']
 
-export default class Node {
+class Node {
 
     /**
      * @param {Object} node
@@ -243,3 +243,5 @@ export default class Node {
     }
 
 }
+
+module.exports = Node
