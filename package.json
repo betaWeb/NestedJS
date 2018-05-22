@@ -24,7 +24,7 @@
   ],
   "scripts": {
     "dev": "parcel -p 3000 public/index.html --no-hmr --out-dir ./public/dist",
-    "build": "parcel build index --out-dir build --out-file Nested.min.js"
+    "build": "parcel build index.js --out-dir build --out-file Nested.min.js"
   },
   "devDependencies": {
     "babel": "^6.23.0",
