@@ -1,7 +1,7 @@
 {
-  "name": "nestedjs",
+  "name": "collectr",
   "version": "1.0.0",
-  "description": "Deal with deep nested arrays in JavaScript",
+  "description": "Deal with nested collections in JavaScript with NestedJS",
   "main": "index.js",
   "author": "betaWeb <betaweb34@gmail.com>",
   "license": "MIT",
