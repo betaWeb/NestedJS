@@ -98,7 +98,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({21:[function(require,module,exports) {
+})({22:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -286,7 +286,7 @@ var Node = function () {
         }
 
         /**
-         * Returns siblings nodes if exists, null otherwise
+         * Returns an array of siblings nodes if exists, null otherwise
          * @returns {Node[]|null}
          */
 
@@ -470,8 +470,6 @@ var Nested = function () {
 
         this.data = this.buildTree(data);
         this.currentNode = null;
-        // this.prevNode = null
-        // this.nextNode = null
     }
 
     /**
@@ -492,8 +490,6 @@ var Nested = function () {
             if (data === null) {
                 data = this.data;
                 this.currentNode = null;
-                // this.prevNode = null
-                // this.nextNode = null
             }
 
             var node = null;
@@ -670,7 +666,7 @@ var Nested = function () {
 }();
 
 exports.default = Nested;
-},{"../src/Node":21}],4:[function(require,module,exports) {
+},{"../src/Node":22}],4:[function(require,module,exports) {
 'use strict';
 
 var _Nested = require('../../src/Nested');
