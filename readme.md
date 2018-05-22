@@ -36,7 +36,7 @@ Once package loaded, NestedJS must ne instanciate with a nested collection.
 const collection = [...] // Nested data collection
 const tree = new NestedJS(collection)
 ```
-> **IMPORTANT** : The property of every node's childrenn if there are, have to be named `_children`
+> **IMPORTANT** : The property of every node's children if there are, have to be named `_children`
 
 <br>
 
