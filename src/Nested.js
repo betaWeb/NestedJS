@@ -29,16 +29,13 @@ class Nested {
         for (let i = 0; i < data.length; i++) {
             node = data[i]
             if (node.getId() === id) {
-                let prevNode = data[i - 1] || null
-                let nextNode = data[i + 1] || null
-                node.setProperty('__previd', prevNode !== null ? prevNode.getId() : null)
-                node.setProperty('__nextid', nextNode !== null ? nextNode.getId() : null)
+                this.currentNode = node
                 break
-            } else if (node.hasChildNodes()) {
+            }
+            else if (node.hasChildNodes()) {
                 node = this.retrieveNode(id, node.childNodes())
             } else node = null
         }
-        this.currentNode = node
         return this.currentNode
     }
 
@@ -50,12 +47,15 @@ class Nested {
      * @returns {Node[]|[]}
      */
     retrieveNodesBy(key, value, data = null) {
-        return (data || this.data).reduce((acc, node) => {
-            if (node.hasProperty(key) && node.getProperty(key) === value) acc.push(node)
+        data = data || this.data
+        let nodes = []
+        for (let i = 0; i < data.length; i++) {
+            let node = data[i]
+            if (node.hasProperty(key) && node.getProperty(key) === value) nodes.push(node)
             if (node.hasChildNodes())
-                acc = acc.concat(this.retrieveNodesBy(key, value, node.childNodes()))
-            return acc
-        }, [])
+                nodes = nodes.concat(this.retrieveNodesBy(key, value, node.childNodes()))
+        }
+        return nodes
     }
 
     /**
@@ -85,7 +85,7 @@ class Nested {
     getPreviousNodes(node) {
         if (node.constructor === String) node = this.retrieveNode(node)
         let previousNodes = []
-        if (node.getPreviousId() !== null) {
+        if (node !== null && node.getPreviousId() !== null) {
             previousNodes.push(node.previousNode())
             previousNodes = previousNodes.concat(this.getPreviousNodes(node.getPreviousId()))
         }
@@ -110,7 +110,7 @@ class Nested {
     getNextNodes(node) {
         if (node.constructor === String) node = this.retrieveNode(node)
         let nextNodes = []
-        if (node.getNextId() !== null) {
+        if (node !== null && node.getNextId() !== null) {
             nextNodes.push(node.nextNode())
             nextNodes = nextNodes.concat(this.getNextNodes(node.getNextId()))
         }
@@ -148,11 +148,11 @@ class Nested {
      */
     buildTree(data = [], parentid = null) {
         if (!this.count) this.count = 0
-        return data.reduce((acc, node) => {
+        let tree = data.reduce((acc, node) => {
             this.count += 1
             if (node.constructor !== Node)
                 node = new Node(node)
-            node.setProperty('__nodeid', `node-${this.count}`)
+            node.setProperty('__nodeid', `node-${this.count * Math.floor((Math.random() * 10000) + 1)}`)
             node.setProperty('__parentid', parentid)
             node.setProperty('__tree', this)
             if (node.hasChildNodes())
@@ -160,6 +160,13 @@ class Nested {
             acc.push(node)
             return acc
         }, [])
+        for (let i = 0; i < tree.length; i++) {
+            let prevNode = tree[i - 1]
+            tree[i].setProperty('__previd', prevNode ? prevNode.getId() : null)
+            let nextNode = tree[i + 1]
+            tree[i].setProperty('__nextid', nextNode ? nextNode.getId() : null)
+        }
+        return tree
     }
 
 }

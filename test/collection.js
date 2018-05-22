@@ -4,7 +4,7 @@ module.exports = [{
 }, {
     id: 2,
     name: 'entry 2',
-    _children: [{
+    children: [{
         id: 20,
         name: 'entry 20'
     }, {
@@ -16,7 +16,7 @@ module.exports = [{
     }, {
         id: 23,
         name: 'entry 23',
-        _children: [{
+        children: [{
             id: 230,
             name: 'entry 230'
         }, {
@@ -30,13 +30,13 @@ module.exports = [{
 }, {
     id: 3,
     name: 'entry 3',
-    _children: [{
+    children: [{
         id: 30,
         name: 'entry 30'
     }, {
         id: 31,
         name: 'entry 31',
-        _children: [{
+        children: [{
             id: 310,
             name: 'entry 310'
         }, {
