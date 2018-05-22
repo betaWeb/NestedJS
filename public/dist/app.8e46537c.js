@@ -98,7 +98,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({23:[function(require,module,exports) {
+})({21:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -441,7 +441,7 @@ var Node = function () {
 }();
 
 exports.default = Node;
-},{}],21:[function(require,module,exports) {
+},{}],20:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -470,9 +470,8 @@ var Nested = function () {
 
         this.data = this.buildTree(data);
         this.currentNode = null;
-        this.parentNode = null;
-        this.prevNode = null;
-        this.nextNode = null;
+        // this.prevNode = null
+        // this.nextNode = null
     }
 
     /**
@@ -493,18 +492,18 @@ var Nested = function () {
             if (data === null) {
                 data = this.data;
                 this.currentNode = null;
-                this.prevNode = null;
-                this.nextNode = null;
+                // this.prevNode = null
+                // this.nextNode = null
             }
 
             var node = null;
             for (var i = 0; i < data.length; i++) {
                 node = data[i];
                 if (node.getId() === id) {
-                    this.prevNode = data[i - 1] || null;
-                    this.nextNode = data[i + 1] || null;
-                    node.setProperty('__previd', this.prevNode !== null ? this.prevNode.getId() : null);
-                    node.setProperty('__nextid', this.nextNode !== null ? this.nextNode.getId() : null);
+                    var prevNode = data[i - 1] || null;
+                    var nextNode = data[i + 1] || null;
+                    node.setProperty('__previd', prevNode !== null ? prevNode.getId() : null);
+                    node.setProperty('__nextid', nextNode !== null ? nextNode.getId() : null);
                     break;
                 } else if (node.hasChildNodes()) {
                     node = this.retrieveNode(id, node.childNodes());
@@ -588,9 +587,8 @@ var Nested = function () {
     }, {
         key: 'getPreviousNode',
         value: function getPreviousNode(node) {
-            var id = node.constructor === _Node2.default ? node.getId() : node;
-            this.retrieveNode(id);
-            return this.prevNode;
+            var id = node.constructor === _Node2.default ? node.getPreviousId() : node;
+            return id !== null ? this.retrieveNode(id) : null;
         }
 
         /**
@@ -620,9 +618,8 @@ var Nested = function () {
     }, {
         key: 'getNextNode',
         value: function getNextNode(node) {
-            var id = node.constructor === _Node2.default ? node.getId() : node;
-            this.retrieveNode(id);
-            return this.nextNode;
+            var id = node.constructor === _Node2.default ? node.getNextId() : node;
+            return id !== null ? this.retrieveNode(id) : null;
         }
 
         /**
@@ -673,7 +670,7 @@ var Nested = function () {
 }();
 
 exports.default = Nested;
-},{"../src/Node":23}],4:[function(require,module,exports) {
+},{"../src/Node":21}],4:[function(require,module,exports) {
 'use strict';
 
 var _Nested = require('../../src/Nested');
@@ -816,27 +813,31 @@ var buildList = function buildList(data) {
                         span.textContent = ' / ' + item.name;
                         $breadcrumb.appendChild(span);
                     });
-                    node.childNodes().forEach(function (n) {
+                    node.childNodes().forEach(function (childnode) {
                         $mainframeDetails.innerHTML = '';
-                        if (n.type === 'folder') return;
                         var el = document.createElement('a');
                         var icon = document.createElement('i');
                         var name = document.createElement('span');
                         icon.classList.add('mainframe-item-icon', 'far');
-                        for (var i in iconskeymap) {
-                            var iconName = 'fa-file';
-                            if (iconskeymap.hasOwnProperty(i) && iconskeymap[i].test(n.extension)) iconName += '-' + i;
-                            icon.classList.add(iconName);
+                        var iconName = 'fa-folder';
+                        if (childnode.type === 'file') {
+                            iconName = 'fa-file';
+                            for (var i in iconskeymap) {
+                                if (iconskeymap.hasOwnProperty(i) && iconskeymap[i].test(childnode.extension)) iconName += '-' + i;
+                            }
                         }
+                        icon.classList.add(iconName);
                         el.appendChild(icon);
-                        el.id = n.getId();
+                        el.id = childnode.getId();
                         el.classList.add('mainframe-item');
-                        name.textContent = n.name;
+                        name.textContent = childnode.name;
                         el.appendChild(name);
                         el.addEventListener('click', function (e) {
-                            var element = e.target.parentNode;
-                            var childnode = tree.retrieveNode(element.id);
-                            $mainframeDetails.innerHTML = '\n                                    <strong>Nom</strong> : ' + childnode.name + '<br>\n                                    <strong>Type</strong> : ' + childnode.extension + '<br>\n                                    <strong>Date de cr\xE9ation</strong> : ' + childnode.creation_date + '<br>\n                                    <strong>Date de derni\xE8re modification</strong> : ' + childnode.last_modification_date + '\n                                ';
+                            if (childnode.type === 'file') {
+                                var element = e.target.parentNode;
+                                var n = tree.retrieveNode(element.id);
+                                $mainframeDetails.innerHTML = '\n                                        <strong>Nom</strong> : ' + n.name + '<br>\n                                        <strong>Type</strong> : ' + n.extension + '<br>\n                                        <strong>Date de cr\xE9ation</strong> : ' + n.creation_date + '<br>\n                                        <strong>Date de derni\xE8re modification</strong> : ' + n.last_modification_date + '\n                                    ';
+                            }
                         });
                         $mainframeList.appendChild(el);
                     });
@@ -855,5 +856,5 @@ var buildList = function buildList(data) {
 };
 
 $tree.appendChild(buildList(tree.data, true));
-},{"../../src/Nested":21}]},{},[4], null)
+},{"../../src/Nested":20}]},{},[4], null)
 //# sourceMappingURL=/app.8e46537c.map

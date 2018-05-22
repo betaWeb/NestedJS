@@ -131,7 +131,7 @@ export default class Node {
     }
 
     /**
-     * Returns siblings nodes if exists, null otherwise
+     * Returns an array of siblings nodes if exists, null otherwise
      * @returns {Node[]|null}
      */
     siblingsNodes() {

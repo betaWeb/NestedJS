@@ -8,9 +8,8 @@ export default class Nested {
     constructor(data = []) {
         this.data = this.buildTree(data)
         this.currentNode = null
-        this.parentNode = null
-        this.prevNode = null
-        this.nextNode = null
+        // this.prevNode = null
+        // this.nextNode = null
     }
 
     /**
@@ -26,18 +25,18 @@ export default class Nested {
         if (data === null) {
             data = this.data
             this.currentNode = null
-            this.prevNode = null
-            this.nextNode = null
+            // this.prevNode = null
+            // this.nextNode = null
         }
 
         let node = null
         for (let i = 0; i < data.length; i++) {
             node = data[i]
             if (node.getId() === id) {
-                this.prevNode = data[i - 1] || null
-                this.nextNode = data[i + 1] || null
-                node.setProperty('__previd', this.prevNode !== null ? this.prevNode.getId() : null)
-                node.setProperty('__nextid', this.nextNode !== null ? this.nextNode.getId() : null)
+                let prevNode = data[i - 1] || null
+                let nextNode = data[i + 1] || null
+                node.setProperty('__previd', prevNode !== null ? prevNode.getId() : null)
+                node.setProperty('__nextid', nextNode !== null ? nextNode.getId() : null)
                 break
             } else if (node.hasChildNodes()) {
                 node = this.retrieveNode(id, node.childNodes())
@@ -103,9 +102,8 @@ export default class Nested {
      * @returns {Node}
      */
     getPreviousNode(node) {
-        const id = node.constructor === Node ? node.getId() : node
-        this.retrieveNode(id)
-        return this.prevNode
+        const id = node.constructor === Node ? node.getPreviousId() : node
+        return id !== null ? this.retrieveNode(id) : null
     }
 
     /**
@@ -129,9 +127,8 @@ export default class Nested {
      * @returns {Node}
      */
     getNextNode(node) {
-        const id = node.constructor === Node ? node.getId() : node
-        this.retrieveNode(id)
-        return this.nextNode
+        const id = node.constructor === Node ? node.getNextId() : node
+        return id !== null ? this.retrieveNode(id) : null
     }
 
     /**

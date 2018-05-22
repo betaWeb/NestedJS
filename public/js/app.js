@@ -140,33 +140,37 @@ let buildList = (data, root = false) => {
                         span.textContent = ` / ${item.name}`
                         $breadcrumb.appendChild(span)
                     })
-                    node.childNodes().forEach(n => {
+                    node.childNodes().forEach(childnode => {
                         $mainframeDetails.innerHTML = ''
-                        if (n.type === 'folder') return
                         let el = document.createElement('a')
                         let icon = document.createElement('i')
                         let name = document.createElement('span')
                         icon.classList.add('mainframe-item-icon', 'far')
-                        for (let i in iconskeymap) {
-                            let iconName = 'fa-file'
-                            if (iconskeymap.hasOwnProperty(i) && iconskeymap[i].test(n.extension))
-                                iconName += `-${i}`
-                            icon.classList.add(iconName)
+                        let iconName = 'fa-folder'
+                        if (childnode.type === 'file') {
+                            iconName = 'fa-file'
+                            for (let i in iconskeymap) {
+                                if (iconskeymap.hasOwnProperty(i) && iconskeymap[i].test(childnode.extension))
+                                    iconName += `-${i}`
+                            }
                         }
+                        icon.classList.add(iconName)
                         el.appendChild(icon)
-                        el.id = n.getId()
+                        el.id = childnode.getId()
                         el.classList.add('mainframe-item')
-                        name.textContent = n.name
+                        name.textContent = childnode.name
                         el.appendChild(name)
                         el.addEventListener('click', e => {
-                            let element = e.target.parentNode
-                            let childnode = tree.retrieveNode(element.id)
-                            $mainframeDetails.innerHTML = `
-                                    <strong>Nom</strong> : ${childnode.name}<br>
-                                    <strong>Type</strong> : ${childnode.extension}<br>
-                                    <strong>Date de création</strong> : ${childnode.creation_date}<br>
-                                    <strong>Date de dernière modification</strong> : ${childnode.last_modification_date}
-                                `
+                            if (childnode.type === 'file') {
+                                let element = e.target.parentNode
+                                let n = tree.retrieveNode(element.id)
+                                $mainframeDetails.innerHTML = `
+                                        <strong>Nom</strong> : ${n.name}<br>
+                                        <strong>Type</strong> : ${n.extension}<br>
+                                        <strong>Date de création</strong> : ${n.creation_date}<br>
+                                        <strong>Date de dernière modification</strong> : ${n.last_modification_date}
+                                    `
+                            }
                         })
                         $mainframeList.appendChild(el)
                     })
