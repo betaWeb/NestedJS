@@ -12,7 +12,7 @@ let nextNode = node.nextNode()
 
 describe('Tree', () => {
 
-    it('should have transformed collection', () => {
+    it('should have build collection tree', () => {
         expect(tree).to.have.property('data')
         expect(tree.data).to.not.be.empty
     })

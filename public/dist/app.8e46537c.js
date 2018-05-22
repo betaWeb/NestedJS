@@ -99,12 +99,6 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   // Override the current require with this new one
   return newRequire;
 })({22:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -118,10 +112,12 @@ var Node = function () {
      */
     function Node() {
         var node = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var tree_instance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
         _classCallCheck(this, Node);
 
         this._properties = this._mapProperties(node);
+        this._tree_instance = tree_instance;
     }
 
     /**
@@ -178,7 +174,7 @@ var Node = function () {
     }, {
         key: 'getId',
         value: function getId() {
-            return this.getProperty('__nodeid');
+            return this.getProperty(this.getTree().options.properties.node_id);
         }
 
         /**
@@ -189,18 +185,7 @@ var Node = function () {
     }, {
         key: 'getParentId',
         value: function getParentId() {
-            return this.getProperty('__parentid');
-        }
-
-        /**
-         * Returns next node unique id
-         * @returns {String|null}
-         */
-
-    }, {
-        key: 'getNextId',
-        value: function getNextId() {
-            return this.getProperty('__nextid');
+            return this.getProperty(this.getTree().options.properties.parent_id);
         }
 
         /**
@@ -211,7 +196,18 @@ var Node = function () {
     }, {
         key: 'getPreviousId',
         value: function getPreviousId() {
-            return this.getProperty('__previd');
+            return this.getProperty(this.getTree().options.properties.prev_id);
+        }
+
+        /**
+         * Returns next node unique id
+         * @returns {String|null}
+         */
+
+    }, {
+        key: 'getNextId',
+        value: function getNextId() {
+            return this.getProperty(this.getTree().options.properties.next_id);
         }
 
         /**
@@ -222,7 +218,7 @@ var Node = function () {
     }, {
         key: 'childNodes',
         value: function childNodes() {
-            return this.getProperty('children', []);
+            return this.getProperty(this.getTree().options.properties.children_key, []);
         }
 
         /**
@@ -305,7 +301,7 @@ var Node = function () {
     }, {
         key: 'getTree',
         value: function getTree() {
-            return this.getProperty('__tree') || null;
+            return this._tree_instance || null;
         }
 
         /**
@@ -440,34 +436,37 @@ var Node = function () {
     return Node;
 }();
 
-exports.default = Node;
+module.exports = Node;
 },{}],20:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Node = require('../src/Node');
-
-var _Node2 = _interopRequireDefault(_Node);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Node = require('./Node');
+var DEFAULT_OPTIONS = {
+    properties: {
+        node_id: '__nodeid',
+        node_id_prefix: 'node-',
+        parent_id: '__parentid',
+        prev_id: '__previd',
+        next_id: '__nextid',
+        children_key: 'children'
+    }
+};
 
 var Nested = function () {
 
     /**
      * @param {Array} data
+     * @param {Object} options
      */
     function Nested() {
         var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
         _classCallCheck(this, Nested);
 
+        this.options = Object.assign({}, DEFAULT_OPTIONS, options);
         this.data = this.buildTree(data);
         this.currentNode = null;
     }
@@ -496,16 +495,12 @@ var Nested = function () {
             for (var i = 0; i < data.length; i++) {
                 node = data[i];
                 if (node.getId() === id) {
-                    var prevNode = data[i - 1] || null;
-                    var nextNode = data[i + 1] || null;
-                    node.setProperty('__previd', prevNode !== null ? prevNode.getId() : null);
-                    node.setProperty('__nextid', nextNode !== null ? nextNode.getId() : null);
+                    this.currentNode = node;
                     break;
                 } else if (node.hasChildNodes()) {
                     node = this.retrieveNode(id, node.childNodes());
                 } else node = null;
             }
-            this.currentNode = node;
             return this.currentNode;
         }
 
@@ -520,15 +515,16 @@ var Nested = function () {
     }, {
         key: 'retrieveNodesBy',
         value: function retrieveNodesBy(key, value) {
-            var _this = this;
-
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
-            return (data || this.data).reduce(function (acc, node) {
-                if (node.hasProperty(key) && node.getProperty(key) === value) acc.push(node);
-                if (node.hasChildNodes()) acc = acc.concat(_this.retrieveNodesBy(key, value, node.childNodes()));
-                return acc;
-            }, []);
+            data = data || this.data;
+            var nodes = [];
+            for (var i = 0; i < data.length; i++) {
+                var node = data[i];
+                if (node.hasProperty(key) && node.getProperty(key) === value) nodes.push(node);
+                if (node.hasChildNodes()) nodes = nodes.concat(this.retrieveNodesBy(key, value, node.childNodes()));
+            }
+            return nodes;
         }
 
         /**
@@ -540,7 +536,7 @@ var Nested = function () {
     }, {
         key: 'getParentNode',
         value: function getParentNode(node) {
-            var id = node.constructor === _Node2.default ? node.getParentId() : node;
+            var id = node.constructor === Node ? node.getParentId() : node;
             return this.retrieveNode(id);
         }
 
@@ -567,7 +563,7 @@ var Nested = function () {
         value: function getPreviousNodes(node) {
             if (node.constructor === String) node = this.retrieveNode(node);
             var previousNodes = [];
-            if (node.getPreviousId() !== null) {
+            if (node !== null && node.getPreviousId() !== null) {
                 previousNodes.push(node.previousNode());
                 previousNodes = previousNodes.concat(this.getPreviousNodes(node.getPreviousId()));
             }
@@ -583,7 +579,7 @@ var Nested = function () {
     }, {
         key: 'getPreviousNode',
         value: function getPreviousNode(node) {
-            var id = node.constructor === _Node2.default ? node.getPreviousId() : node;
+            var id = node.constructor === Node ? node.getPreviousId() : node;
             return id !== null ? this.retrieveNode(id) : null;
         }
 
@@ -598,7 +594,7 @@ var Nested = function () {
         value: function getNextNodes(node) {
             if (node.constructor === String) node = this.retrieveNode(node);
             var nextNodes = [];
-            if (node.getNextId() !== null) {
+            if (node !== null && node.getNextId() !== null) {
                 nextNodes.push(node.nextNode());
                 nextNodes = nextNodes.concat(this.getNextNodes(node.getNextId()));
             }
@@ -614,7 +610,7 @@ var Nested = function () {
     }, {
         key: 'getNextNode',
         value: function getNextNode(node) {
-            var id = node.constructor === _Node2.default ? node.getNextId() : node;
+            var id = node.constructor === Node ? node.getNextId() : node;
             return id !== null ? this.retrieveNode(id) : null;
         }
 
@@ -643,30 +639,36 @@ var Nested = function () {
     }, {
         key: 'buildTree',
         value: function buildTree() {
-            var _this2 = this;
+            var _this = this;
 
             var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
             var parentid = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
             if (!this.count) this.count = 0;
-            return data.reduce(function (acc, node) {
-                _this2.count += 1;
-                if (node.constructor !== _Node2.default) node = new _Node2.default(node);
-                node.setProperty('__nodeid', 'node-' + _this2.count);
-                node.setProperty('__parentid', parentid);
-                node.setProperty('__tree', _this2);
-                if (node.hasChildNodes()) node.setProperty('children', _this2.buildTree(node.childNodes(), node.getId()));
+            var tree = data.reduce(function (acc, node) {
+                _this.count += 1;
+                if (node.constructor !== Node) node = new Node(node, _this);
+                node.setProperty(_this.options.properties.node_id, '' + _this.options.properties.node_id_prefix + _this.count * Math.floor(Math.random() * 10000 + 1));
+                node.setProperty(_this.options.properties.parent_id, parentid);
+                if (node.hasChildNodes()) node.setProperty(_this.options.properties.children_key, _this.buildTree(node.childNodes(), node.getId()));
                 acc.push(node);
                 return acc;
             }, []);
+            for (var i = 0; i < tree.length; i++) {
+                var hasPreviousNode = tree[i - 1] !== undefined && tree[i - 1].constructor === Node;
+                var hasNextNode = tree[i + 1] !== undefined && tree[i + 1].constructor === Node;
+                tree[i].setProperty(this.options.properties.prev_id, hasPreviousNode ? tree[i - 1].getId() : null);
+                tree[i].setProperty(this.options.properties.next_id, hasNextNode ? tree[i + 1].getId() : null);
+            }
+            return tree;
         }
     }]);
 
     return Nested;
 }();
 
-exports.default = Nested;
-},{"../src/Node":22}],4:[function(require,module,exports) {
+module.exports = Nested;
+},{"./Node":22}],4:[function(require,module,exports) {
 'use strict';
 
 var _Nested = require('../../src/Nested');

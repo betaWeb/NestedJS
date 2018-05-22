@@ -5,8 +5,9 @@ class Node {
     /**
      * @param {Object} node
      */
-    constructor(node = {}) {
+    constructor(node = {}, tree_instance = null) {
         this._properties = this._mapProperties(node)
+        this._tree_instance = tree_instance
     }
 
     /**
@@ -50,7 +51,7 @@ class Node {
      * @returns {String}
      */
     getId() {
-        return this.getProperty('__nodeid')
+        return this.getProperty(this.getTree().options.properties.node_id)
     }
 
     /**
@@ -58,15 +59,7 @@ class Node {
      * @returns {String|null}
      */
     getParentId() {
-        return this.getProperty('__parentid')
-    }
-
-    /**
-     * Returns next node unique id
-     * @returns {String|null}
-     */
-    getNextId() {
-        return this.getProperty('__nextid')
+        return this.getProperty(this.getTree().options.properties.parent_id)
     }
 
     /**
@@ -74,7 +67,15 @@ class Node {
      * @returns {String|null}
      */
     getPreviousId() {
-        return this.getProperty('__previd')
+        return this.getProperty(this.getTree().options.properties.prev_id)
+    }
+
+    /**
+     * Returns next node unique id
+     * @returns {String|null}
+     */
+    getNextId() {
+        return this.getProperty(this.getTree().options.properties.next_id)
     }
 
     /**
@@ -82,7 +83,7 @@ class Node {
      * @returns {Node[]}
      */
     childNodes() {
-        return this.getProperty('children', [])
+        return this.getProperty(this.getTree().options.properties.children_key, [])
     }
 
     /**
@@ -144,7 +145,7 @@ class Node {
      * @returns {Nested|null}
      */
     getTree() {
-        return this.getProperty('__tree') || null
+        return this._tree_instance || null
     }
 
     /**

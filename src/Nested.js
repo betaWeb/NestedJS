@@ -1,11 +1,23 @@
 const Node = require('./Node')
+const DEFAULT_OPTIONS = {
+    properties: {
+        node_id: '__nodeid',
+        node_id_prefix: 'node-',
+        parent_id: '__parentid',
+        prev_id: '__previd',
+        next_id: '__nextid',
+        children_key: 'children'
+    }
+}
 
 class Nested {
 
     /**
      * @param {Array} data
+     * @param {Object} options
      */
-    constructor(data = []) {
+    constructor(data = [], options = {}) {
+        this.options = Object.assign({}, DEFAULT_OPTIONS, options)
         this.data = this.buildTree(data)
         this.currentNode = null
     }
@@ -151,20 +163,19 @@ class Nested {
         let tree = data.reduce((acc, node) => {
             this.count += 1
             if (node.constructor !== Node)
-                node = new Node(node)
-            node.setProperty('__nodeid', `node-${this.count * Math.floor((Math.random() * 10000) + 1)}`)
-            node.setProperty('__parentid', parentid)
-            node.setProperty('__tree', this)
+                node = new Node(node, this)
+            node.setProperty(this.options.properties.node_id, `${this.options.properties.node_id_prefix}${this.count * Math.floor((Math.random() * 10000) + 1)}`)
+            node.setProperty(this.options.properties.parent_id, parentid)
             if (node.hasChildNodes())
-                node.setProperty('children', this.buildTree(node.childNodes(), node.getId()))
+                node.setProperty(this.options.properties.children_key, this.buildTree(node.childNodes(), node.getId()))
             acc.push(node)
             return acc
         }, [])
         for (let i = 0; i < tree.length; i++) {
-            let prevNode = tree[i - 1]
-            tree[i].setProperty('__previd', prevNode ? prevNode.getId() : null)
-            let nextNode = tree[i + 1]
-            tree[i].setProperty('__nextid', nextNode ? nextNode.getId() : null)
+            let hasPreviousNode = tree[i - 1] !== undefined && tree[i - 1].constructor === Node
+            let hasNextNode = tree[i + 1] !== undefined && tree[i + 1].constructor === Node
+            tree[i].setProperty(this.options.properties.prev_id, hasPreviousNode ? tree[i - 1].getId() : null)
+            tree[i].setProperty(this.options.properties.next_id, hasNextNode ? tree[i + 1].getId() : null)
         }
         return tree
     }
