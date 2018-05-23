@@ -1,7 +1,9 @@
 const Node = require('./Node')
 const {properties} = require('./config')
 const {getContext, setContext, randomNum} = require('./utils')
-const DEFAULT_OPTIONS = {}
+const DEFAULT_OPTIONS = {
+    children_key: 'children'
+}
 
 class Nested {
 
@@ -176,7 +178,7 @@ class Nested {
             node.setProperty(properties.node_id, this._setUniqueId())
             node.setProperty(properties.parent_id, parentid)
             if (node.hasChildNodes())
-                node.setProperty(properties.children_key, this.buildTree(node.childNodes(), node.getId()))
+                node.setProperty(this.options.children_key, this.buildTree(node.childNodes(), node.getId()))
             acc.push(node)
             return acc
         }, [])

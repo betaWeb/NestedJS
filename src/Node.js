@@ -86,7 +86,7 @@ class Node {
      * @returns {Node[]}
      */
     childNodes() {
-        return this.getProperty(properties.children_key, [])
+        return this.getProperty(this.getTree().options.children_key, [])
     }
 
     /**
