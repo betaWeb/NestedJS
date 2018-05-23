@@ -18,6 +18,14 @@ class Nested {
     }
 
     /**
+     * Returns tree instance unique id
+     * @returns {String}
+     */
+    getUniqueId() {
+        return this._uniqueid
+    }
+
+    /**
      * Return entire tree size (with children)
      * @returns {number}
      */
