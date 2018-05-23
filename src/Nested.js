@@ -169,8 +169,10 @@ class Nested {
                 node = new Node(node, this._uniqueid)
             node.setProperty(properties.node_id, this._setUniqueId())
             node.setProperty(properties.parent_id, parentid)
-            if (parentid !== null) node.setProperty(properties.root_id, rootid)
-            else rootid = node.getId()
+            if (parentid === null) {
+                rootid = node.getId()
+                node.setProperty(properties.root_id, null)
+            } else node.setProperty(properties.root_id, rootid)
             if (node.hasChildNodes())
                 node.setProperty(this.options.children_key, this.buildTree(node.childNodes(), node.getId(), rootid))
             acc.push(node)

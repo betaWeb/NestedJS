@@ -44,6 +44,7 @@ The created instance transform the collection and add several properties and met
 #### Properties
  - `__nodeid` : this property is unique and allows you to retrieve a specific node
  - `__parentid` : tag the parent node id of a node if exists, null otherwise
+ - `__rootid` : tag the root node id of a node if exists, null otherwise
  - `__previd` : tag the previous node id of a node if exists, null otherwise
  - `__nextid` : tag the next node id of a node if exists, null otherwise
 
