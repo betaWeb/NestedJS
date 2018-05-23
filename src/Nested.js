@@ -38,49 +38,30 @@ class Nested {
     /**
      * Retrieve node by id
      * @param {String} id
-     * @param {Array|null} data
      * @returns {Node|null}
      */
-    retrieveNode(id, data = null) {
-        if (this.currentNode !== null && this.currentNode.getId() === id)
-            return this.currentNode
-
-        if (data === null) {
-            data = this.data
-            this.currentNode = null
-        }
-
-        let node = null
-        for (let i = 0; i < data.length; i++) {
-            node = data[i]
-            if (node.getId() === id) {
-                this.currentNode = node
-                break
-            }
-            else if (node.hasChildNodes()) {
-                node = this.retrieveNode(id, node.childNodes())
-            } else node = null
-        }
-        return this.currentNode
+    retrieveNode(id) {
+        return this._retrieveNode(id, this.data)
     }
 
     /**
      * Retrieve nodes by key-value couple
      * @param {String} key
      * @param {*|null|undefined} value
-     * @param {Array} data
      * @returns {Node[]|[]}
      */
-    retrieveNodesBy(key, value, data = null) {
-        data = data || this.data
-        let nodes = []
-        for (let i = 0; i < data.length; i++) {
-            let node = data[i]
-            if (node.hasProperty(key) && node.getProperty(key) === value) nodes.push(node)
-            if (node.hasChildNodes())
-                nodes = nodes.concat(this.retrieveNodesBy(key, value, node.childNodes()))
-        }
-        return nodes
+    retrieveNodesBy(key, value) {
+        if (!key) return null
+        return this._retrieveNodesBy(key, value, this.data)
+    }
+
+    /**
+     *
+     * @param depth
+     * @returns {*}
+     */
+    retrieveNodesByDepth(depth = 0) {
+        return this._retrieveNodesByDepth(depth, this.data)
     }
 
     /**
@@ -143,12 +124,22 @@ class Nested {
     }
 
     /**
-     * Retrieve next node
+     * Retrieve node next node
      * @param {Node|String} node
      * @returns {Node}
      */
     getNextNode(node) {
         const id = node.constructor === Node ? node.getNextId() : node
+        return id !== null ? this.retrieveNode(id) : null
+    }
+
+    /**
+     * Retrieve node root node
+     * @param {Node|String} node
+     * @returns {Node}
+     */
+    getRootNode(node) {
+        const id = node.constructor === Node ? node.getRootId() : node
         return id !== null ? this.retrieveNode(id) : null
     }
 
@@ -169,16 +160,19 @@ class Nested {
     /**
      * @param {Array} data
      * @param {String|null} parentid
+     * @param {String|null} rootid
      * @returns {Node[]}
      */
-    buildTree(data = [], parentid = null) {
+    buildTree(data = [], parentid = null, rootid = null) {
         let tree = data.reduce((acc, node) => {
             if (node.constructor !== Node)
                 node = new Node(node, this._uniqueid)
             node.setProperty(properties.node_id, this._setUniqueId())
             node.setProperty(properties.parent_id, parentid)
+            if (parentid !== null) node.setProperty(properties.root_id, rootid)
+            else rootid = node.getId()
             if (node.hasChildNodes())
-                node.setProperty(this.options.children_key, this.buildTree(node.childNodes(), node.getId()))
+                node.setProperty(this.options.children_key, this.buildTree(node.childNodes(), node.getId(), rootid))
             acc.push(node)
             return acc
         }, [])
@@ -191,6 +185,75 @@ class Nested {
         return tree
     }
 
+    /**
+     * Retrieve node by id
+     * @param {String} id
+     * @param {Array|null} data
+     * @private
+     * @returns {Node|null}
+     */
+    _retrieveNode(id, data) {
+        if (id === undefined || id === null) return null
+        if (this.currentNode !== null && this.currentNode.getId() === id)
+            return this.currentNode
+
+        let node = null
+        for (let i = 0; i < data.length; i++) {
+            node = data[i]
+            if (node.getId() === id) {
+                this.currentNode = node
+                break
+            }
+            else if (node.hasChildNodes()) {
+                node = this._retrieveNode(id, node.childNodes())
+            } else node = null
+        }
+        return this.currentNode
+    }
+
+
+    /**
+     * Retrieve nodes by key-value couple
+     * @param {String} key
+     * @param {*|null|undefined} value
+     * @param {Array} data
+     * @private
+     * @returns {Node[]|[]}
+     */
+    _retrieveNodesBy(key, value, data) {
+        let nodes = []
+        for (let i = 0; i < data.length; i++) {
+            let node = data[i]
+            if (node.hasProperty(key) && node.getProperty(key) === value) nodes.push(node)
+            if (node.hasChildNodes())
+                nodes = nodes.concat(this._retrieveNodesBy(key, value, node.childNodes()))
+        }
+        return nodes
+    }
+
+    /**
+     * Retrieve nodes by depth
+     * @param {Number} depth
+     * @param {Array} data
+     * @param {Number} currentDepth
+     * @private
+     * @returns {Node[]|[]}
+     */
+    _retrieveNodesByDepth(depth = 0, data = null, currentDepth = 0) {
+        let nodes = []
+        for (let i = 0; i < data.length; i++) {
+            let node = data[i]
+            if (!node.hasParentNode()) currentDepth = 0
+            if (depth === currentDepth) nodes.push(node)
+            else if (node.hasChildNodes()) nodes = nodes.concat(this._retrieveNodesByDepth(depth, node.childNodes(), currentDepth += 1))
+        }
+        return nodes
+    }
+
+    /**
+     * @returns {string}
+     * @private
+     */
     _setUniqueId() {
         if (!this._count) this._count = 0
         this._count += 1

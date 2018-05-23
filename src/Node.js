@@ -74,11 +74,15 @@ class Node {
     }
 
     /**
-     * Returns next node unique id
+     * Returns root node unique id
      * @returns {String|null}
      */
     getNextId() {
         return this.getProperty(properties.next_id)
+    }
+
+    getRootId() {
+        return this.getProperty(properties.root_id)
     }
 
     /**
@@ -132,6 +136,15 @@ class Node {
     parentNode() {
         let instance = this.getTree()
         return instance !== null ? instance.getParentNode(this) : null
+    }
+
+    /**
+     * Returns parent node if exists, null otherwise
+     * @returns {Node|null}
+     */
+    rootNode() {
+        let instance = this.getTree()
+        return instance !== null ? instance.getRootNode(this) : null
     }
 
     /**
@@ -228,6 +241,13 @@ class Node {
      */
     hasNextNode() {
         return Boolean(this.getNextId() !== null)
+    }
+
+    /**
+     * @returns {Boolean}
+     */
+    hasRootNode() {
+        return Boolean(this.getRootId() !== null)
     }
 
     /**

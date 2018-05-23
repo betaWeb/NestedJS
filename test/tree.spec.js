@@ -8,6 +8,7 @@ clearContext()
 let tree = new NestedJS(collection)
 let nodes = tree.retrieveNodesBy('name', 'entry 23')
 node = nodes[0]
+
 let parentNode = node.parentNode()
 let parentPreviousNode = parentNode.previousNode()
 let previousNode = node.previousNode()
@@ -23,6 +24,7 @@ describe('Tree', () => {
     it('should have 17 entries on the tree', () => expect(tree.getTreeSize()).to.equal(17))
 
     it('should have uniqueid', () => expect(tree.getUniqueId()).to.not.be.null)
+
     it('should have stocked context', () => {
         let context = getContext(tree.getUniqueId())
         expect(context).to.not.be.null
@@ -30,6 +32,16 @@ describe('Tree', () => {
         expect(context.getUniqueId()).to.equal(tree.getUniqueId())
     })
 
+    it('should retrieve depth 1 nodes', () => {
+        let nodes = tree.retrieveNodesByDepth(1)
+        expect(nodes).not.to.be.empty
+        expect(nodes.length).to.equal(7)
+    })
+
+    it('should not retrieve depth 4 nodes', () => {
+        let nodes = tree.retrieveNodesByDepth(4)
+        expect(nodes).to.be.empty
+    })
 })
 
 describe('Node', () => {
@@ -66,6 +78,14 @@ describe('Node', () => {
     it('should have first breadcrumb entry name to "entry 2"', () => {
         let breadcrumb = node.breadcrumb()
         expect(breadcrumb[0].name).to.equal('entry 2')
+    })
+
+    it('should have root node', () => {
+        let root = node.rootNode()
+        expect(root).not.to.be.null
+        expect(root.getId()).to.equal(node.getRootId())
+        expect(root.getParentId()).to.be.null
+        expect(root.parentNode()).to.be.null
     })
 
 })
