@@ -167,6 +167,16 @@ This will returns a node which is an instance of the NestedJS's `Node` class. Th
     node.hasParentNode()
 ```
 
+- returns root node if exists, null otherwise :
+```JS
+    node.rootNode()
+```
+
+- returns true if the node has a root node, false otherwise :
+```JS
+    node.hasRootNode()
+```
+
 - returns current node breadcrumb :
 ```JS
     node.breadcrumb()

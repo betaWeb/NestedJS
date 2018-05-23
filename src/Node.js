@@ -74,13 +74,17 @@ class Node {
     }
 
     /**
-     * Returns root node unique id
+     * Returns next node unique id
      * @returns {String|null}
      */
     getNextId() {
         return this.getProperty(properties.next_id)
     }
 
+    /**
+     * Returns root node unique id
+     * @returns {String|null}
+     */
     getRootId() {
         return this.getProperty(properties.root_id)
     }
