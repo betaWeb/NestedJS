@@ -1,6 +1,6 @@
 {
   "name": "collectr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Deal with nested collections in JavaScript with NestedJS",
   "main": "index.js",
   "author": "betaWeb <betaweb34@gmail.com>",
