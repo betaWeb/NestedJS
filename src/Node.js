@@ -1,13 +1,16 @@
-const PRIVATE_PROPERTIES = ['__nodeid', '__parentid', '__nextid', '__previd', '__tree']
+const {properties} = require('./config')
+const {getContext} = require('./utils')
+const PRIVATE_PROPERTIES = [properties.node_id, properties.parent_id, properties.next_id, properties.prev_id]
 
 class Node {
 
     /**
      * @param {Object} node
+     * @param {Nested|null} tree_uniqueid
      */
-    constructor(node = {}, tree_instance = null) {
+    constructor(node = {}, tree_uniqueid = null) {
         this._properties = this._mapProperties(node)
-        this._tree_instance = tree_instance
+        this._tree_uniqueid = tree_uniqueid
     }
 
     /**
@@ -51,7 +54,7 @@ class Node {
      * @returns {String}
      */
     getId() {
-        return this.getProperty(this.getTree().options.properties.node_id)
+        return this.getProperty(properties.node_id)
     }
 
     /**
@@ -59,7 +62,7 @@ class Node {
      * @returns {String|null}
      */
     getParentId() {
-        return this.getProperty(this.getTree().options.properties.parent_id)
+        return this.getProperty(properties.parent_id)
     }
 
     /**
@@ -67,7 +70,7 @@ class Node {
      * @returns {String|null}
      */
     getPreviousId() {
-        return this.getProperty(this.getTree().options.properties.prev_id)
+        return this.getProperty(properties.prev_id)
     }
 
     /**
@@ -75,7 +78,7 @@ class Node {
      * @returns {String|null}
      */
     getNextId() {
-        return this.getProperty(this.getTree().options.properties.next_id)
+        return this.getProperty(properties.next_id)
     }
 
     /**
@@ -83,7 +86,7 @@ class Node {
      * @returns {Node[]}
      */
     childNodes() {
-        return this.getProperty(this.getTree().options.properties.children_key, [])
+        return this.getProperty(properties.children_key, [])
     }
 
     /**
@@ -145,7 +148,7 @@ class Node {
      * @returns {Nested|null}
      */
     getTree() {
-        return this._tree_instance || null
+        return getContext(this._tree_uniqueid)
     }
 
     /**

@@ -1,14 +1,7 @@
 const Node = require('./Node')
-const DEFAULT_OPTIONS = {
-    properties: {
-        node_id: '__nodeid',
-        node_id_prefix: 'node-',
-        parent_id: '__parentid',
-        prev_id: '__previd',
-        next_id: '__nextid',
-        children_key: 'children'
-    }
-}
+const {properties} = require('./config')
+const {getContext, setContext, randomNum} = require('./utils')
+const DEFAULT_OPTIONS = {}
 
 class Nested {
 
@@ -18,8 +11,18 @@ class Nested {
      */
     constructor(data = [], options = {}) {
         this.options = Object.assign({}, DEFAULT_OPTIONS, options)
+        this._uniqueid = setContext(this)
         this.data = this.buildTree(data)
         this.currentNode = null
+        return getContext(this._uniqueid)
+    }
+
+    /**
+     * Return entire tree size (with children)
+     * @returns {number}
+     */
+    getTreeSize() {
+        return this._count || 0
     }
 
     /**
@@ -159,27 +162,30 @@ class Nested {
      * @returns {Node[]}
      */
     buildTree(data = [], parentid = null) {
-        if (!this.count) this.count = 0
         let tree = data.reduce((acc, node) => {
-            this.count += 1
             if (node.constructor !== Node)
-                node = new Node(node, this)
-            node.setProperty(this.options.properties.node_id, `${this.options.properties.node_id_prefix}${this.count * Math.floor((Math.random() * 10000) + 1)}`)
-            node.setProperty(this.options.properties.parent_id, parentid)
+                node = new Node(node, this._uniqueid)
+            node.setProperty(properties.node_id, this._setUniqueId())
+            node.setProperty(properties.parent_id, parentid)
             if (node.hasChildNodes())
-                node.setProperty(this.options.properties.children_key, this.buildTree(node.childNodes(), node.getId()))
+                node.setProperty(properties.children_key, this.buildTree(node.childNodes(), node.getId()))
             acc.push(node)
             return acc
         }, [])
         for (let i = 0; i < tree.length; i++) {
             let hasPreviousNode = tree[i - 1] !== undefined && tree[i - 1].constructor === Node
             let hasNextNode = tree[i + 1] !== undefined && tree[i + 1].constructor === Node
-            tree[i].setProperty(this.options.properties.prev_id, hasPreviousNode ? tree[i - 1].getId() : null)
-            tree[i].setProperty(this.options.properties.next_id, hasNextNode ? tree[i + 1].getId() : null)
+            tree[i].setProperty(properties.prev_id, hasPreviousNode ? tree[i - 1].getId() : null)
+            tree[i].setProperty(properties.next_id, hasNextNode ? tree[i + 1].getId() : null)
         }
         return tree
     }
 
+    _setUniqueId() {
+        if (!this._count) this._count = 0
+        this._count += 1
+        return `${properties.node_id_prefix}${this._count * randomNum()}`
+    }
 }
 
 module.exports = Nested
