@@ -2,6 +2,8 @@
 This library allows you to deal with deep nested arrays in JavaScript.<br>
 Navigate into nested collections can be tricky, so NestedJS try to get it easier.
 
+You can find here a [live demo](https://codepen.io/betaweb/pen/XqwEpE) with very basic example.
+
 <br>
 
 ## Getting started
