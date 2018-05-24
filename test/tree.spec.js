@@ -1,6 +1,6 @@
 const expect = require('chai').expect
 const {clearContext, getContext} = require('../src/utils')
-const NestedJS = require('../src/Nested')
+const NestedJS = require('../index')
 const collection = require('./collection')
 
 clearContext()

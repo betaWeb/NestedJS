@@ -98,26 +98,95 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({22:[function(require,module,exports) {
+})({24:[function(require,module,exports) {
+var config = {
+    properties: {
+        node_id: '__nodeid',
+        node_id_prefix: 'node-',
+        parent_id: '__parentid',
+        root_id: '__rootid',
+        prev_id: '__previd',
+        next_id: '__nextid'
+    }
+};
+
+module.exports = config;
+},{}],25:[function(require,module,exports) {
+var global = arguments[3];
+var utils = {
+    isBrowser: function isBrowser() {
+        try {
+            return window !== undefined && window.document !== undefined;
+        } catch (e) {
+            return false;
+        }
+    },
+    isNode: function isNode() {
+        try {
+            return module !== undefined && module.exports !== undefined;
+        } catch (e) {
+            return false;
+        }
+    },
+    retrieveContext: function retrieveContext() {
+        var _context = null;
+        if (utils.isBrowser()) _context = window;else if (utils.isNode()) _context = global;
+        return _context;
+    },
+    getContext: function getContext(context_id) {
+        if (utils.isBrowser() && window.__nestedjs) return window.__nestedjs[context_id] || null;
+        if (utils.isNode() && global.__nestedjs) return global.__nestedjs[context_id] || null;
+        return null;
+    },
+    setContext: function setContext(context) {
+        var _context = utils.retrieveContext();
+        if (_context === null || _context === undefined) throw new Error('NestedJS.setContext - no context found');
+        if (!_context.__nestedjs) _context.__nestedjs = {};
+        var uniqueid = Math.floor(utils.randomNum() * (+new Date() / 1000));
+        _context.__nestedjs[uniqueid] = context;
+        return uniqueid;
+    },
+    clearContext: function clearContext() {
+        var _context = utils.retrieveContext();
+        if (_context === null || _context === undefined) throw new Error('NestedJS.clearContext - no context found');
+        _context.__nestedjs = {};
+    },
+    randomNum: function randomNum() {
+        var start = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+        var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10000;
+
+        return Math.floor(Math.random() * length + start);
+    }
+};
+
+module.exports = utils;
+},{}],23:[function(require,module,exports) {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PRIVATE_PROPERTIES = ['__nodeid', '__parentid', '__nextid', '__previd', '__tree'];
+var _require = require('./config'),
+    properties = _require.properties;
+
+var _require2 = require('./utils'),
+    getContext = _require2.getContext;
+
+var PRIVATE_PROPERTIES = [properties.node_id, properties.parent_id, properties.next_id, properties.prev_id];
 
 var Node = function () {
 
     /**
      * @param {Object} node
+     * @param {Nested|null} tree_uniqueid
      */
     function Node() {
         var node = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var tree_instance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+        var tree_uniqueid = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
         _classCallCheck(this, Node);
 
         this._properties = this._mapProperties(node);
-        this._tree_instance = tree_instance;
+        this._tree_uniqueid = tree_uniqueid;
     }
 
     /**
@@ -174,7 +243,7 @@ var Node = function () {
     }, {
         key: 'getId',
         value: function getId() {
-            return this.getProperty(this.getTree().options.properties.node_id);
+            return this.getProperty(properties.node_id);
         }
 
         /**
@@ -185,7 +254,7 @@ var Node = function () {
     }, {
         key: 'getParentId',
         value: function getParentId() {
-            return this.getProperty(this.getTree().options.properties.parent_id);
+            return this.getProperty(properties.parent_id);
         }
 
         /**
@@ -196,7 +265,7 @@ var Node = function () {
     }, {
         key: 'getPreviousId',
         value: function getPreviousId() {
-            return this.getProperty(this.getTree().options.properties.prev_id);
+            return this.getProperty(properties.prev_id);
         }
 
         /**
@@ -207,7 +276,18 @@ var Node = function () {
     }, {
         key: 'getNextId',
         value: function getNextId() {
-            return this.getProperty(this.getTree().options.properties.next_id);
+            return this.getProperty(properties.next_id);
+        }
+
+        /**
+         * Returns root node unique id
+         * @returns {String|null}
+         */
+
+    }, {
+        key: 'getRootId',
+        value: function getRootId() {
+            return this.getProperty(properties.root_id);
         }
 
         /**
@@ -218,7 +298,7 @@ var Node = function () {
     }, {
         key: 'childNodes',
         value: function childNodes() {
-            return this.getProperty(this.getTree().options.properties.children_key, []);
+            return this.getProperty(this.getTree().options.children_key, []);
         }
 
         /**
@@ -282,6 +362,18 @@ var Node = function () {
         }
 
         /**
+         * Returns parent node if exists, null otherwise
+         * @returns {Node|null}
+         */
+
+    }, {
+        key: 'rootNode',
+        value: function rootNode() {
+            var instance = this.getTree();
+            return instance !== null ? instance.getRootNode(this) : null;
+        }
+
+        /**
          * Returns an array of siblings nodes if exists, null otherwise
          * @returns {Node[]|null}
          */
@@ -301,7 +393,7 @@ var Node = function () {
     }, {
         key: 'getTree',
         value: function getTree() {
-            return this._tree_instance || null;
+            return getContext(this._tree_uniqueid);
         }
 
         /**
@@ -410,6 +502,16 @@ var Node = function () {
         }
 
         /**
+         * @returns {Boolean}
+         */
+
+    }, {
+        key: 'hasRootNode',
+        value: function hasRootNode() {
+            return Boolean(this.getRootId() !== null);
+        }
+
+        /**
          * Map node properties
          * @param {Object} properties
          * @returns {Object}
@@ -437,21 +539,23 @@ var Node = function () {
 }();
 
 module.exports = Node;
-},{}],20:[function(require,module,exports) {
+},{"./config":24,"./utils":25}],21:[function(require,module,exports) {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Node = require('./Node');
+
+var _require = require('./config'),
+    properties = _require.properties;
+
+var _require2 = require('./utils'),
+    getContext = _require2.getContext,
+    setContext = _require2.setContext,
+    randomNum = _require2.randomNum;
+
 var DEFAULT_OPTIONS = {
-    properties: {
-        node_id: '__nodeid',
-        node_id_prefix: 'node-',
-        parent_id: '__parentid',
-        prev_id: '__previd',
-        next_id: '__nextid',
-        children_key: 'children'
-    }
+    children_key: 'children'
 };
 
 var Nested = function () {
@@ -467,64 +571,73 @@ var Nested = function () {
         _classCallCheck(this, Nested);
 
         this.options = Object.assign({}, DEFAULT_OPTIONS, options);
+        this._uniqueid = setContext(this);
         this.data = this.buildTree(data);
         this.currentNode = null;
+        return getContext(this._uniqueid);
     }
 
     /**
-     * Retrieve node by id
-     * @param {String} id
-     * @param {Array|null} data
-     * @returns {Node|null}
+     * Returns tree instance unique id
+     * @returns {String}
      */
 
 
     _createClass(Nested, [{
+        key: 'getUniqueId',
+        value: function getUniqueId() {
+            return this._uniqueid;
+        }
+
+        /**
+         * Return entire tree size (with children)
+         * @returns {number}
+         */
+
+    }, {
+        key: 'getTreeSize',
+        value: function getTreeSize() {
+            return this._count || 0;
+        }
+
+        /**
+         * Retrieve node by id
+         * @param {String} id
+         * @returns {Node|null}
+         */
+
+    }, {
         key: 'retrieveNode',
         value: function retrieveNode(id) {
-            var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-            if (this.currentNode !== null && this.currentNode.getId() === id) return this.currentNode;
-
-            if (data === null) {
-                data = this.data;
-                this.currentNode = null;
-            }
-
-            var node = null;
-            for (var i = 0; i < data.length; i++) {
-                node = data[i];
-                if (node.getId() === id) {
-                    this.currentNode = node;
-                    break;
-                } else if (node.hasChildNodes()) {
-                    node = this.retrieveNode(id, node.childNodes());
-                } else node = null;
-            }
-            return this.currentNode;
+            return this._retrieveNode(id, this.data);
         }
 
         /**
          * Retrieve nodes by key-value couple
          * @param {String} key
          * @param {*|null|undefined} value
-         * @param {Array} data
          * @returns {Node[]|[]}
          */
 
     }, {
         key: 'retrieveNodesBy',
         value: function retrieveNodesBy(key, value) {
-            var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+            if (!key) return null;
+            return this._retrieveNodesBy(key, value, this.data);
+        }
 
-            data = data || this.data;
-            var nodes = [];
-            for (var i = 0; i < data.length; i++) {
-                var node = data[i];
-                if (node.hasProperty(key) && node.getProperty(key) === value) nodes.push(node);
-                if (node.hasChildNodes()) nodes = nodes.concat(this.retrieveNodesBy(key, value, node.childNodes()));
-            }
-            return nodes;
+        /**
+         *
+         * @param depth
+         * @returns {*}
+         */
+
+    }, {
+        key: 'retrieveNodesByDepth',
+        value: function retrieveNodesByDepth() {
+            var depth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+            return this._retrieveNodesByDepth(depth, this.data);
         }
 
         /**
@@ -602,7 +715,7 @@ var Nested = function () {
         }
 
         /**
-         * Retrieve next node
+         * Retrieve node next node
          * @param {Node|String} node
          * @returns {Node}
          */
@@ -611,6 +724,19 @@ var Nested = function () {
         key: 'getNextNode',
         value: function getNextNode(node) {
             var id = node.constructor === Node ? node.getNextId() : node;
+            return id !== null ? this.retrieveNode(id) : null;
+        }
+
+        /**
+         * Retrieve node root node
+         * @param {Node|String} node
+         * @returns {Node}
+         */
+
+    }, {
+        key: 'getRootNode',
+        value: function getRootNode(node) {
+            var id = node.constructor === Node ? node.getRootId() : node;
             return id !== null ? this.retrieveNode(id) : null;
         }
 
@@ -633,34 +759,125 @@ var Nested = function () {
         /**
          * @param {Array} data
          * @param {String|null} parentid
+         * @param {String|null} rootid
          * @returns {Node[]}
          */
 
     }, {
         key: 'buildTree',
         value: function buildTree() {
+            var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
             var _this = this;
 
-            var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
             var parentid = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            var rootid = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
-            if (!this.count) this.count = 0;
             var tree = data.reduce(function (acc, node) {
-                _this.count += 1;
-                if (node.constructor !== Node) node = new Node(node, _this);
-                node.setProperty(_this.options.properties.node_id, '' + _this.options.properties.node_id_prefix + _this.count * Math.floor(Math.random() * 10000 + 1));
-                node.setProperty(_this.options.properties.parent_id, parentid);
-                if (node.hasChildNodes()) node.setProperty(_this.options.properties.children_key, _this.buildTree(node.childNodes(), node.getId()));
+                if (node.constructor !== Node) node = new Node(node, _this._uniqueid);
+                node.setProperty(properties.node_id, _this._setUniqueId());
+                node.setProperty(properties.parent_id, parentid);
+                if (parentid === null) {
+                    rootid = node.getId();
+                    node.setProperty(properties.root_id, null);
+                } else node.setProperty(properties.root_id, rootid);
+                if (node.hasChildNodes()) node.setProperty(_this.options.children_key, _this.buildTree(node.childNodes(), node.getId(), rootid));
                 acc.push(node);
                 return acc;
             }, []);
             for (var i = 0; i < tree.length; i++) {
                 var hasPreviousNode = tree[i - 1] !== undefined && tree[i - 1].constructor === Node;
                 var hasNextNode = tree[i + 1] !== undefined && tree[i + 1].constructor === Node;
-                tree[i].setProperty(this.options.properties.prev_id, hasPreviousNode ? tree[i - 1].getId() : null);
-                tree[i].setProperty(this.options.properties.next_id, hasNextNode ? tree[i + 1].getId() : null);
+                tree[i].setProperty(properties.prev_id, hasPreviousNode ? tree[i - 1].getId() : null);
+                tree[i].setProperty(properties.next_id, hasNextNode ? tree[i + 1].getId() : null);
             }
             return tree;
+        }
+
+        /**
+         * Retrieve node by id
+         * @param {String} id
+         * @param {Array|null} data
+         * @private
+         * @returns {Node|null}
+         */
+
+    }, {
+        key: '_retrieveNode',
+        value: function _retrieveNode(id, data) {
+            if (id === undefined || id === null) return null;
+            if (this.currentNode !== null && this.currentNode.getId() === id) return this.currentNode;
+
+            var node = null;
+            for (var i = 0; i < data.length; i++) {
+                node = data[i];
+                if (node.getId() === id) {
+                    this.currentNode = node;
+                    break;
+                } else if (node.hasChildNodes()) {
+                    node = this._retrieveNode(id, node.childNodes());
+                } else node = null;
+            }
+            return this.currentNode;
+        }
+
+        /**
+         * Retrieve nodes by key-value couple
+         * @param {String} key
+         * @param {*|null|undefined} value
+         * @param {Array} data
+         * @private
+         * @returns {Node[]|[]}
+         */
+
+    }, {
+        key: '_retrieveNodesBy',
+        value: function _retrieveNodesBy(key, value, data) {
+            var nodes = [];
+            for (var i = 0; i < data.length; i++) {
+                var node = data[i];
+                if (node.hasProperty(key) && node.getProperty(key) === value) nodes.push(node);
+                if (node.hasChildNodes()) nodes = nodes.concat(this._retrieveNodesBy(key, value, node.childNodes()));
+            }
+            return nodes;
+        }
+
+        /**
+         * Retrieve nodes by depth
+         * @param {Number} depth
+         * @param {Array} data
+         * @param {Number} currentDepth
+         * @private
+         * @returns {Node[]|[]}
+         */
+
+    }, {
+        key: '_retrieveNodesByDepth',
+        value: function _retrieveNodesByDepth() {
+            var depth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+            var currentDepth = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+            var nodes = [];
+            for (var i = 0; i < data.length; i++) {
+                var node = data[i];
+                if (!node.hasParentNode()) currentDepth = 0;
+                if (depth === currentDepth) nodes.push(node);else if (node.hasChildNodes()) nodes = nodes.concat(this._retrieveNodesByDepth(depth, node.childNodes(), currentDepth += 1));
+            }
+            return nodes;
+        }
+
+        /**
+         * @returns {string}
+         * @private
+         */
+
+    }, {
+        key: '_setUniqueId',
+        value: function _setUniqueId() {
+            if (!this._count) this._count = 0;
+            this._count += 1;
+            return '' + properties.node_id_prefix + this._count * randomNum();
         }
     }]);
 
@@ -668,7 +885,7 @@ var Nested = function () {
 }();
 
 module.exports = Nested;
-},{"./Node":22}],4:[function(require,module,exports) {
+},{"./Node":23,"./config":24,"./utils":25}],4:[function(require,module,exports) {
 'use strict';
 
 var _Nested = require('../../src/Nested');
@@ -854,5 +1071,5 @@ var buildList = function buildList(data) {
 };
 
 $tree.appendChild(buildList(tree.data, true));
-},{"../../src/Nested":20}]},{},[4], null)
+},{"../../src/Nested":21}]},{},[4], null)
 //# sourceMappingURL=/app.8e46537c.map

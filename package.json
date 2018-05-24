@@ -23,8 +23,9 @@
     "javascript-array"
   ],
   "scripts": {
-    "dev": "parcel -p 3000 public/index.html --no-hmr --out-dir ./public/dist",
-    "build": "parcel build index.js --out-dir build --out-file Nested.min.js",
+    "parcel_dev": "parcel -p 3000 public/index.html --no-hmr --out-dir ./public/dist",
+    "parcel_build": "parcel build index.js --out-dir build --out-file Nested.js --no-minify",
+    "build": "./node_modules/.bin/webpack --mode production -c webpack.config.js",
     "test": "./node_modules/.bin/mocha --reporter spec --watch"
   },
   "devDependencies": {
@@ -33,6 +34,8 @@
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
     "parcel-bundler": "^1.8.1",
-    "sinon": "^5.0.7"
+    "sinon": "^5.0.7",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.4"
   }
 }
