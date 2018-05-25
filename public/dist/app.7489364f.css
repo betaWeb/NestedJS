@@ -1,0 +1,274 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i");
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+html, body {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-family: 'Lato', sans-serif;
+  background: #232323 url(http://xinature.com/wp-content/uploads/2016/10/mountains-sunlight-forest-valleys-mountain-photos-wallpaper.jpg) no-repeat center;
+  background-size: cover !important; }
+
+.explorer__wrapper {
+  position: absolute;
+  width: 1120px;
+  height: 70%;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  box-shadow: 0 0 16px 6px rgba(0, 0, 0, 0.1); }
+
+.explorer__container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border-radius: 6px;
+  overflow: hidden; }
+
+.explorer__header, .explorer__nav {
+  color: #fff; }
+
+.explorer__header {
+  height: 50px;
+  line-height: 50px;
+  background-color: #3C4C55;
+  padding: 0 20px; }
+  .explorer__header .header__title {
+    font-size: 1.2em;
+    line-height: inherit;
+    font-weight: 600; }
+    .explorer__header .header__title .header__logo {
+      margin-right: .334em;
+      color: #556C76;
+      line-height: inherit;
+      font-size: 1.5em;
+      vertical-align: bottom; }
+
+.explorer__nav {
+  display: inline-flex;
+  flex-direction: row;
+  height: 90px;
+  background-color: #556C76;
+  overflow: hidden;
+  box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.5); }
+  .explorer__nav .nav__actions, .explorer__nav .nav__breadcrumb, .explorer__nav .nav__search {
+    padding-top: 20px;
+    padding-bottom: 20px; }
+  .explorer__nav .nav__actions, .explorer__nav .nav__search {
+    width: 260px; }
+  .explorer__nav .nav__actions {
+    padding-left: 20px; }
+    .explorer__nav .nav__actions .action__button {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      margin: 5px;
+      text-align: center;
+      font-size: 1.25em;
+      color: #fff;
+      border-radius: 40px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer; }
+      .explorer__nav .nav__actions .action__button.action__prev {
+        color: #556C76;
+        background-color: #fff;
+        box-shadow: 2px 2px 10px 3px rgba(0, 0, 0, 0.1); }
+      .explorer__nav .nav__actions .action__button:focus {
+        outline: none; }
+    .explorer__nav .nav__actions .actions__left {
+      float: left; }
+    .explorer__nav .nav__actions .actions__right {
+      float: right; }
+  .explorer__nav .nav__breadcrumb {
+    width: 600px; }
+    .explorer__nav .nav__breadcrumb .breadcrumb__content {
+      position: relative;
+      display: inline-flex;
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      margin: 5px 0;
+      padding: 0 50px 0 20px;
+      background-color: #fff;
+      color: #485A64;
+      border-radius: 6px;
+      box-shadow: 0 0 32px 2px rgba(0, 0, 0, 0.1); }
+      .explorer__nav .nav__breadcrumb .breadcrumb__content::before {
+        position: absolute;
+        content: '\f107';
+        top: 50%;
+        right: 10px;
+        color: rgba(0, 0, 0, 0.5);
+        font-family: Font Awesome\ 5 Free;
+        transform: translateY(-50%); }
+      .explorer__nav .nav__breadcrumb .breadcrumb__content .breadcrumb__item {
+        user-select: none; }
+        .explorer__nav .nav__breadcrumb .breadcrumb__content .breadcrumb__item .breadcrumb__name {
+          cursor: pointer; }
+          .explorer__nav .nav__breadcrumb .breadcrumb__content .breadcrumb__item .breadcrumb__name.selected {
+            font-weight: 600; }
+        .explorer__nav .nav__breadcrumb .breadcrumb__content .breadcrumb__item .breadcrumb__icon {
+          margin: 0 5px;
+          vertical-align: text-bottom;
+          color: rgba(0, 0, 0, 0.5); }
+  .explorer__nav .nav__search {
+    padding-left: 40px;
+    padding-right: 40px; }
+    .explorer__nav .nav__search .search__content {
+      position: relative;
+      float: right;
+      width: 80%;
+      height: 40px;
+      margin: 5px 0;
+      background-color: #fff;
+      border-radius: 6px;
+      box-shadow: 0 0 32px 2px rgba(0, 0, 0, 0.1); }
+      .explorer__nav .nav__search .search__content::before {
+        position: absolute;
+        content: '\f002';
+        top: 50%;
+        left: 10px;
+        color: rgba(0, 0, 0, 0.5);
+        font-family: Font Awesome\ 5 Free;
+        transform: translateY(-50%); }
+      .explorer__nav .nav__search .search__content [name="search"] {
+        background-color: transparent;
+        width: 100%;
+        height: inherit;
+        outline: none;
+        border: none;
+        box-shadow: none;
+        padding: 0 10px 0 30px; }
+        .explorer__nav .nav__search .search__content [name="search"]:focus {
+          outline: none;
+          border: none;
+          box-shadow: none; }
+
+.explorer__body {
+  display: inline-flex;
+  flex-direction: row;
+  height: calc(100% - 50px - 90px);
+  background-color: #F6F8F3;
+  box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.5); }
+
+.explorer__tree {
+  width: 260px;
+  padding: 20px;
+  background-color: #E0E8EB; }
+  .explorer__tree .explorer__list .explorer__item {
+    margin-bottom: 10px;
+    font-size: 14px;
+    user-select: none; }
+    .explorer__tree .explorer__list .explorer__item .item__caret {
+      margin-right: 3px;
+      font-size: 18px;
+      vertical-align: middle;
+      color: #8FA5B0;
+      cursor: pointer;
+      transform: rotate(0);
+      transform-origin: center;
+      transition: transform .3s; }
+    .explorer__tree .explorer__list .explorer__item .item__content {
+      cursor: pointer; }
+      .explorer__tree .explorer__list .explorer__item .item__content .item__icon {
+        margin: 0 5px;
+        font-size: 16px;
+        color: #485A64;
+        vertical-align: middle; }
+      .explorer__tree .explorer__list .explorer__item .item__content .item__name {
+        color: #333f46; }
+    .explorer__tree .explorer__list .explorer__item.opened .item__caret {
+      transform: rotate(45deg); }
+
+.explorer__content {
+  display: inline-flex;
+  flex-direction: row; }
+  .explorer__content .explorer__file_listing {
+    width: 500px;
+    overflow: hidden;
+    box-shadow: 16px 0 28px -8px rgba(0, 0, 0, 0.25); }
+    .explorer__content .explorer__file_listing .file_listing__container {
+      display: inline-flex;
+      justify-content: flex-start;
+      flex-direction: row;
+      width: inherit;
+      height: 100%;
+      padding: 20px; }
+      .explorer__content .explorer__file_listing .file_listing__container .explorer__file {
+        width: 25%;
+        height: 105px;
+        padding: 10px 5px 5px 5px;
+        margin-bottom: 5px;
+        text-align: center;
+        color: #485A64;
+        cursor: pointer;
+        background-color: transparent;
+        border-radius: 6px; }
+        .explorer__content .explorer__file_listing .file_listing__container .explorer__file:hover, .explorer__content .explorer__file_listing .file_listing__container .explorer__file.is-active {
+          background-color: rgba(224, 232, 235, 0.75); }
+        .explorer__content .explorer__file_listing .file_listing__container .explorer__file .file__icon {
+          font-size: 3.5em;
+          margin-bottom: 15px; }
+        .explorer__content .explorer__file_listing .file_listing__container .explorer__file .file__name {
+          font-size: .75em;
+          width: 100%;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden; }
+  .explorer__content .explorer__file_details {
+    width: 360px;
+    background-color: #E0E8EB; }
+    .explorer__content .explorer__file_details .file_details__container {
+      display: flex;
+      flex-direction: column; }
+      .explorer__content .explorer__file_details .file_details__container .details__image {
+        max-width: 100%;
+        height: auto; }
+      .explorer__content .explorer__file_details .file_details__container .details__icon {
+        width: 100%;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+        font-size: 5em;
+        color: #485A64;
+        border-bottom: 2px solid rgba(143, 165, 176, 0.1667); }
+      .explorer__content .explorer__file_details .file_details__container .details__info, .explorer__content .explorer__file_details .file_details__container .details__credentials {
+        padding: 15px 20px; }
+      .explorer__content .explorer__file_details .file_details__container .details__info {
+        border-bottom: 2px solid rgba(143, 165, 176, 0.1667);
+        color: #485A64; }
+        .explorer__content .explorer__file_details .file_details__container .details__info .info__name {
+          font-size: 16px;
+          margin: 0; }
+        .explorer__content .explorer__file_details .file_details__container .details__info .info__type {
+          font-size: 14px; }
+      .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__title {
+        color: #485A64;
+        font-size: 14px;
+        margin-top: 0;
+        margin-bottom: 5px;
+        text-transform: uppercase; }
+      .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table {
+        width: 100%;
+        display: table; }
+        .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__title, .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__value {
+          width: 50%;
+          padding: 5px 7px; }
+        .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__title {
+          text-align: right;
+          text-transform: uppercase;
+          color: #8FA5B0;
+          font-size: 14px;
+          font-weight: 600; }
+        .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__value {
+          color: #485A64;
+          font-size: 14px; }

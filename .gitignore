@@ -63,3 +63,4 @@ typings/
 .idea/*
 .idea/workspace.xml
 .cache/*
+_public/*
