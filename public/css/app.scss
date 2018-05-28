@@ -8,6 +8,7 @@ $navColor: #556C76;
 $sidebarColor: #E0E8EB;
 $detailsColor: #E0E8EB;
 $listingColor: #F6F8F3;
+$activeColor: #2EA9E2;
 $textColor: #485A64;
 $caretColor: #8FA5B0;
 $wrapperWidth: 1120px;
@@ -231,42 +232,62 @@ html, body {
 
 .explorer__tree {
   width: $treeWidth;
-  padding: 20px;
+  padding: 20px 0;
   background-color: $sidebarColor;
 
   .explorer__list {
+    margin-left: 0;
+
     .explorer__item {
-      margin-bottom: 10px;
+      line-height: 30px;
       font-size: 14px;
       user-select: none;
 
-      .item__caret {
-        margin-right: 3px;
-        font-size: 18px;
-        vertical-align: middle;
-        color: $caretColor;
-        cursor: pointer;
-        transform: rotate(0);
-        transform-origin: center;
-        transition: transform .3s;
-      }
+      .item__wrapper {
+        margin-left: 10px;
 
-      .item__content {
-        cursor: pointer;
-
-        .item__icon {
-          margin: 0 5px;
-          font-size: 16px;
-          color: $textColor;
+        .item__caret {
+          margin-right: 3px;
+          font-size: 18px;
           vertical-align: middle;
+          color: $caretColor;
+          cursor: pointer;
+          transform: rotate(0);
+          transform-origin: center;
+          transition: transform .3s;
         }
-        .item__name {
-          color: darken($textColor, 10%);
+
+        .item__content {
+          cursor: pointer;
+
+          .item__icon {
+            margin: 0 5px;
+            font-size: 16px;
+            color: $textColor;
+            vertical-align: middle;
+          }
+          .item__name {
+            color: darken($textColor, 10%);
+          }
         }
       }
 
       &.opened .item__caret {
         transform: rotate(45deg);
+      }
+
+      &.active {
+        background-color: $whiteColor;
+        /*background-color: $activeColor;
+
+        .item__content {
+          .item__icon {
+            color: $whiteColor;
+          }
+          .item__name {
+            color: $whiteColor;
+          }
+        }*/
       }
     }
   }
@@ -285,8 +306,8 @@ html, body {
       display: inline-flex;
       justify-content: flex-start;
       flex-direction: row;
+      flex-wrap: wrap;
       width: inherit;
-      height: 100%;
       padding: 20px;
 
       .explorer__file {

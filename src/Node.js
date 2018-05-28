@@ -1,6 +1,6 @@
 const {properties} = require('./config')
 const {getContext} = require('./utils')
-const PRIVATE_PROPERTIES = [properties.node_id, properties.parent_id, properties.next_id, properties.prev_id]
+const PRIVATE_PROPERTIES = [properties.node_id, properties.parent_id, properties.next_id, properties.prev_id, properties.depth]
 
 class Node {
 
@@ -252,6 +252,14 @@ class Node {
      */
     hasRootNode() {
         return Boolean(this.getRootId() !== null)
+    }
+
+    /**
+     * Returns node depth
+     * @returns {Number}
+     */
+    depth() {
+        return this.getProperty(properties.depth) || 0
     }
 
     /**

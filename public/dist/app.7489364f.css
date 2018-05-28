@@ -162,32 +162,48 @@ html, body {
 
 .explorer__tree {
   width: 260px;
-  padding: 20px;
+  padding: 20px 0;
   background-color: #E0E8EB; }
-  .explorer__tree .explorer__list .explorer__item {
-    margin-bottom: 10px;
-    font-size: 14px;
-    user-select: none; }
-    .explorer__tree .explorer__list .explorer__item .item__caret {
-      margin-right: 3px;
-      font-size: 18px;
-      vertical-align: middle;
-      color: #8FA5B0;
-      cursor: pointer;
-      transform: rotate(0);
-      transform-origin: center;
-      transition: transform .3s; }
-    .explorer__tree .explorer__list .explorer__item .item__content {
-      cursor: pointer; }
-      .explorer__tree .explorer__list .explorer__item .item__content .item__icon {
-        margin: 0 5px;
-        font-size: 16px;
-        color: #485A64;
-        vertical-align: middle; }
-      .explorer__tree .explorer__list .explorer__item .item__content .item__name {
-        color: #333f46; }
-    .explorer__tree .explorer__list .explorer__item.opened .item__caret {
-      transform: rotate(45deg); }
+  .explorer__tree .explorer__list {
+    margin-left: 0; }
+    .explorer__tree .explorer__list .explorer__item {
+      line-height: 30px;
+      font-size: 14px;
+      user-select: none; }
+      .explorer__tree .explorer__list .explorer__item .item__wrapper {
+        margin-left: 10px; }
+        .explorer__tree .explorer__list .explorer__item .item__wrapper .item__caret {
+          margin-right: 3px;
+          font-size: 18px;
+          vertical-align: middle;
+          color: #8FA5B0;
+          cursor: pointer;
+          transform: rotate(0);
+          transform-origin: center;
+          transition: transform .3s; }
+        .explorer__tree .explorer__list .explorer__item .item__wrapper .item__content {
+          cursor: pointer; }
+          .explorer__tree .explorer__list .explorer__item .item__wrapper .item__content .item__icon {
+            margin: 0 5px;
+            font-size: 16px;
+            color: #485A64;
+            vertical-align: middle; }
+          .explorer__tree .explorer__list .explorer__item .item__wrapper .item__content .item__name {
+            color: #333f46; }
+      .explorer__tree .explorer__list .explorer__item.opened .item__caret {
+        transform: rotate(45deg); }
+      .explorer__tree .explorer__list .explorer__item.active {
+        background-color: #fff;
+        /*background-color: $activeColor;
+
+        .item__content {
+          .item__icon {
+            color: $whiteColor;
+          }
+          .item__name {
+            color: $whiteColor;
+          }
+        }*/ }
 
 .explorer__content {
   display: inline-flex;
@@ -200,8 +216,8 @@ html, body {
       display: inline-flex;
       justify-content: flex-start;
       flex-direction: row;
+      flex-wrap: wrap;
       width: inherit;
-      height: 100%;
       padding: 20px; }
       .explorer__content .explorer__file_listing .file_listing__container .explorer__file {
         width: 25%;

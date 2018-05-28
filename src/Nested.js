@@ -161,21 +161,30 @@ class Nested {
      * @param {Array} data
      * @param {String|null} parentid
      * @param {String|null} rootid
+     * @param {Number} depth
      * @returns {Node[]}
      */
-    buildTree(data = [], parentid = null, rootid = null) {
+    buildTree(data = [], parentid = null, rootid = null, depth = 0) {
         let tree = data.reduce((acc, node) => {
             if (node.constructor !== Node)
                 node = new Node(node, this._uniqueid)
+
             node.setProperty(properties.node_id, this._setUniqueId())
             node.setProperty(properties.parent_id, parentid)
+
             if (parentid === null) {
                 rootid = node.getId()
+                depth = 0
                 node.setProperty(properties.root_id, null)
             } else node.setProperty(properties.root_id, rootid)
+
+            node.setProperty(properties.depth, depth)
+
             if (node.hasChildNodes())
-                node.setProperty(this.options.children_key, this.buildTree(node.childNodes(), node.getId(), rootid))
+                node.setProperty(this.options.children_key, this.buildTree(node.childNodes(), node.getId(), rootid, depth += 1))
+
             acc.push(node)
+
             return acc
         }, [])
         for (let i = 0; i < tree.length; i++) {

@@ -10,23 +10,21 @@
 </template>
 
 <script>
+    import { mapActions, mapGetters } from 'vuex'
+
     export default {
         name: "Breadcrumb",
-        data() {
-            return {
-                breadcrumb: []
-            }
-        },
         methods: {
+            ...mapActions(['setItem']),
             isLast(index) {
                 return index === this.breadcrumb.length - 1
             },
-            goTo(item) {
-                this.$root.$emit('nested.tree.item.content', { item })
+            goTo(node) {
+                this.setItem(node)
             }
         },
-        mounted() {
-            this.$root.$on('nested.breadcrumb', data => this.breadcrumb = data.breadcrumb || [])
+        computed: {
+            ...mapGetters(['breadcrumb'])
         }
     }
 </script>

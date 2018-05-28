@@ -1,18 +1,22 @@
 <template>
-    <div class="explorer__item" :class="{'opened': opened}">
-        <i @click="getChildren()" class="item__caret fa fa-caret-right"></i>
-        <a @click="displayContent(item)" class="item__content">
-            <i class="item__icon fa fa-folder"></i>
-            <span class="item__name">{{ item.name }}</span>
-        </a>
+    <div class="explorer__item" :class="{'opened': opened, 'active': isActive}">
+        <div class="item__wrapper" :style="{marginLeft: paddingShift}">
+            <i @click="getChildren()" class="item__caret fa fa-caret-right"></i>
+            <a @click="displayContent()" class="item__content">
+                <i class="item__icon fa fa-folder"></i>
+                <span class="item__name">{{ node.name }}</span>
+            </a>
+        </div>
     </div>
 </template>
 
 <script>
+    import { mapActions, mapGetters } from 'vuex'
+
     export default {
         name: "Item",
         props: {
-            item: {
+            node: {
                 type: Object,
                 default: {}
             }
@@ -22,14 +26,24 @@
                 opened: false
             }
         },
+        computed: {
+            ...mapGetters(['item', 'depth']),
+            isActive() {
+                return this.item !== null && this.item.getId() === this.node.getId()
+            },
+            paddingShift() {
+                return `${10 * this.depth}px`
+            }
+        },
         methods: {
+            ...mapActions(['toggleOpened', 'setItem']),
             getChildren() {
-                this.$parent.$emit('nested.tree.children', { item: this.item, opened: this.opened })
+                this.toggleOpened(this.node.getId())
                 this.opened = !this.opened
             },
 
             displayContent() {
-                this.$root.$emit('nested.tree.item.content', { item: this.item })
+                this.setItem(this.node)
             }
         }
     }

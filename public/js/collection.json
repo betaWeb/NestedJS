@@ -65,6 +65,36 @@
             "author": "betaWeb",
             "created_at": 1527247843715,
             "updated_at": 1527247843715
+          }, {
+            "type": "folder",
+            "name": "Favourites",
+            "created_at": 1527247843715,
+            "updated_at": 1527247843715,
+            "children": [
+              {
+                "type": "image",
+                "extension": "png",
+                "title": "Sea Wallpaper",
+                "name": "Sea Wallpaper.png",
+                "url": "https://images.unsplash.com/photo-1524307632631-86de8a10b0be?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=9314f9b7175eaa3d262417431932d6a6&auto=format&fit=crop&w=1267&q=80",
+                "dimensions": [1920, 1080],
+                "size": 1258291,
+                "author": "betaWeb",
+                "created_at": 1527247843715,
+                "updated_at": 1527247843715
+              }, {
+                "type": "image",
+                "extension": "jpg",
+                "title": "beautiful picture",
+                "name": "beautiful picture.jpg",
+                "url": "https://images.unsplash.com/photo-1465505041184-f383907cc134?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=b3c61a5733cf0e16122402c2268c3278&auto=format&fit=crop&w=1378&q=80",
+                "dimensions": [1920, 1080],
+                "size": 1258291,
+                "author": "betaWeb",
+                "created_at": 1527247843715,
+                "updated_at": 1527247843715
+              }
+            ]
           }
         ]
       }

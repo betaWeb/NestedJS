@@ -5,7 +5,8 @@ let config = {
         parent_id: '__parentid',
         root_id: '__rootid',
         prev_id: '__previd',
-        next_id: '__nextid'
+        next_id: '__nextid',
+        depth: '__depth'
     }
 }
 

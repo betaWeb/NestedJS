@@ -1,8 +1,9 @@
 <template>
     <div class="explorer__list">
-        <div v-if="list.length && item.type === 'folder'" v-for="item in list" :key="item.getId()" class="explorer__item" :style="{paddingLeft: paddingShift}">
-            <Item :item="item"/>
-            <List v-show="hasOpened(item)" :list="item.childNodes()" :depth="deepness"/>
+        <!--<div v-if="list.length && node.type === 'folder'" v-for="node in list" :key="node.getId()" class="explorer__item" :style="{paddingLeft: paddingShift}">-->
+            <div v-if="list.length && node.type === 'folder'" v-for="node in list" :key="node.getId()" class="explorer__item" :class="{'root__item': !node.hasRootNode()}">
+            <Item :node="node"/>
+            <List v-show="$store.getters.hasOpened(node.getId())" :list="node.childNodes()"/>
         </div>
     </div>
 </template>
@@ -19,48 +20,7 @@
                 default: function () {
                     return []
                 }
-            },
-            depth: {
-                type: Number,
-                default: 0
             }
-        },
-        data () {
-            return {
-                opened: []
-            }
-        },
-        computed: {
-            deepness() {
-                let depth = this.depth
-                return depth += 1
-            },
-            paddingShift() {
-                return `${10 * this.depth}px`
-            }
-        },
-        methods: {
-            hasOpened(item) {
-                return this.opened.includes(item.getId())
-            },
-            addOpened(item) {
-                if (this.hasOpened(item)) return
-                this.opened.push(item.getId())
-            },
-            removeOpened(item) {
-                if (!this.hasOpened(item)) return
-                this.opened = this.opened.filter(id => id !== item.getId())
-            }
-        },
-        mounted() {
-            this.$on('nested.tree.children', data => {
-                if (data.opened === false) this.addOpened(data.item)
-                else this.removeOpened(data.item)
-            })
         }
     }
 </script>
-
-<style scoped>
-
-</style>
