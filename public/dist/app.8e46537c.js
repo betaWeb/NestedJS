@@ -7432,7 +7432,7 @@ render._withStripped = true
           };
         })());
       
-},{}],30:[function(require,module,exports) {
+},{}],31:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8390,7 +8390,7 @@ exports.mapGetters = mapGetters;
 exports.mapActions = mapActions;
 exports.createNamespacedHelpers = createNamespacedHelpers;
 exports.default = index_esm;
-},{}],26:[function(require,module,exports) {
+},{}],28:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8501,7 +8501,7 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":30}],27:[function(require,module,exports) {
+},{"vuex":31}],29:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8587,7 +8587,7 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":30}],28:[function(require,module,exports) {
+},{"vuex":31}],30:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8703,7 +8703,7 @@ render._withStripped = true
           };
         })());
       
-},{"./Header/Actions":26,"./Header/Breadcrumb":27,"./Header/Search":28}],35:[function(require,module,exports) {
+},{"./Header/Actions":28,"./Header/Breadcrumb":29,"./Header/Search":30}],36:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8826,7 +8826,7 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":30}],29:[function(require,module,exports) {
+},{"vuex":31}],27:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8915,7 +8915,7 @@ render._withStripped = true
           };
         })());
       
-},{"./Item":35}],53:[function(require,module,exports) {
+},{"./Item":36}],26:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9123,7 +9123,7 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":30}],34:[function(require,module,exports) {
+},{"vuex":31}],35:[function(require,module,exports) {
 module.exports = [
   {
     "type": "folder",
@@ -9390,7 +9390,7 @@ render._withStripped = true
           };
         })());
       
-},{"./Tree/List":29,"./Details":53,"vuex":30,"../../collection":34}],21:[function(require,module,exports) {
+},{"./Tree/List":27,"./Details":26,"vuex":31,"../../collection":35}],21:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9456,7 +9456,7 @@ render._withStripped = true
           };
         })());
       
-},{"./Explorer/Header":22,"./Explorer/Nav":23,"./Explorer/Main":24}],31:[function(require,module,exports) {
+},{"./Explorer/Header":22,"./Explorer/Nav":23,"./Explorer/Main":24}],32:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9519,7 +9519,7 @@ var icon = exports.icon = function icon() {
         }
     };
 };
-},{}],32:[function(require,module,exports) {
+},{}],33:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9548,7 +9548,7 @@ var toggleOpened = exports.toggleOpened = function toggleOpened(_ref4, id) {
 
     commit('toggleOpened', id);
 };
-},{}],33:[function(require,module,exports) {
+},{}],34:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9618,7 +9618,7 @@ exports.default = new _vuex2.default.Store({
     actions: actions,
     mutations: mutations
 });
-},{"vue":20,"vuex":30,"./getters":31,"./actions":32,"./mutations":33}],4:[function(require,module,exports) {
+},{"vue":20,"vuex":31,"./getters":32,"./actions":33,"./mutations":34}],4:[function(require,module,exports) {
 'use strict';
 
 var _vue = require('vue');
