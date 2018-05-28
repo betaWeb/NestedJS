@@ -8390,7 +8390,7 @@ exports.mapGetters = mapGetters;
 exports.mapActions = mapActions;
 exports.createNamespacedHelpers = createNamespacedHelpers;
 exports.default = index_esm;
-},{}],28:[function(require,module,exports) {
+},{}],27:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8501,7 +8501,7 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":31}],29:[function(require,module,exports) {
+},{"vuex":31}],28:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8587,7 +8587,7 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":31}],30:[function(require,module,exports) {
+},{"vuex":31}],29:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8703,7 +8703,7 @@ render._withStripped = true
           };
         })());
       
-},{"./Header/Actions":28,"./Header/Breadcrumb":29,"./Header/Search":30}],36:[function(require,module,exports) {
+},{"./Header/Actions":27,"./Header/Breadcrumb":28,"./Header/Search":29}],36:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8826,7 +8826,7 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":31}],27:[function(require,module,exports) {
+},{"vuex":31}],30:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9390,7 +9390,7 @@ render._withStripped = true
           };
         })());
       
-},{"./Tree/List":27,"./Details":26,"vuex":31,"../../collection":35}],21:[function(require,module,exports) {
+},{"./Tree/List":30,"./Details":26,"vuex":31,"../../collection":35}],21:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
