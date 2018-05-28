@@ -277,8 +277,7 @@ html, body {
       }
 
       &.active {
-        background-color: $whiteColor;
-        /*background-color: $activeColor;
+        background-color: $activeColor;
 
         .item__content {
           .item__icon {
@@ -287,7 +286,7 @@ html, body {
           .item__name {
             color: $whiteColor;
           }
-        }*/
+        }
       }
     }
   }
@@ -321,10 +320,18 @@ html, body {
         background-color: transparent;
         border-radius: 6px;
 
-        &:hover, &.is-active {
+        &:hover, &.active {
           background-color: rgba($detailsColor, .75);
         }
 
+        .file__thumbnail {
+          width: 75%;
+          height: 70px;
+          margin: 0 auto;
+          padding-top: 10px;
+          background: transparent no-repeat center;
+          background-size: contain !important;
+        }
         .file__icon {
           font-size: 3.5em;
           margin-bottom: 15px;

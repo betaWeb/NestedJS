@@ -193,17 +193,11 @@ html, body {
       .explorer__tree .explorer__list .explorer__item.opened .item__caret {
         transform: rotate(45deg); }
       .explorer__tree .explorer__list .explorer__item.active {
-        background-color: #fff;
-        /*background-color: $activeColor;
-
-        .item__content {
-          .item__icon {
-            color: $whiteColor;
-          }
-          .item__name {
-            color: $whiteColor;
-          }
-        }*/ }
+        background-color: #2EA9E2; }
+        .explorer__tree .explorer__list .explorer__item.active .item__content .item__icon {
+          color: #fff; }
+        .explorer__tree .explorer__list .explorer__item.active .item__content .item__name {
+          color: #fff; }
 
 .explorer__content {
   display: inline-flex;
@@ -229,8 +223,15 @@ html, body {
         cursor: pointer;
         background-color: transparent;
         border-radius: 6px; }
-        .explorer__content .explorer__file_listing .file_listing__container .explorer__file:hover, .explorer__content .explorer__file_listing .file_listing__container .explorer__file.is-active {
+        .explorer__content .explorer__file_listing .file_listing__container .explorer__file:hover, .explorer__content .explorer__file_listing .file_listing__container .explorer__file.active {
           background-color: rgba(224, 232, 235, 0.75); }
+        .explorer__content .explorer__file_listing .file_listing__container .explorer__file .file__thumbnail {
+          width: 75%;
+          height: 70px;
+          margin: 0 auto;
+          padding-top: 10px;
+          background: transparent no-repeat center;
+          background-size: contain !important; }
         .explorer__content .explorer__file_listing .file_listing__container .explorer__file .file__icon {
           font-size: 3.5em;
           margin-bottom: 15px; }

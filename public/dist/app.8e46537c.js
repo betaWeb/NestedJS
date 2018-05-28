@@ -8739,12 +8739,12 @@ exports.default = {
         };
     },
 
-    computed: _extends({}, (0, _vuex.mapGetters)(['item', 'depth']), {
+    computed: _extends({}, (0, _vuex.mapGetters)(['item']), {
         isActive: function isActive() {
             return this.item !== null && this.item.getId() === this.node.getId();
         },
         paddingShift: function paddingShift() {
-            return 10 * this.depth + 'px';
+            return 10 * (this.node.depth() + 1) + 'px';
         }
     }),
     methods: _extends({}, (0, _vuex.mapActions)(['toggleOpened', 'setItem']), {
@@ -8859,7 +8859,6 @@ exports.default = {
 //
 //
 //
-//
       var $9963f7 = exports.default || module.exports;
       if (typeof $9963f7 === 'function') {
         $9963f7 = $9963f7.options;
@@ -8916,7 +8915,215 @@ render._withStripped = true
           };
         })());
       
-},{"./Item":35}],34:[function(require,module,exports) {
+},{"./Item":35}],53:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var _vuex = require('vuex');
+
+exports.default = {
+    name: "Details",
+    methods: {
+        date: function date(ts) {
+            if (!ts) return '';
+            var d = new Date(ts);
+            var seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
+            var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+            var hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+            var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
+            var month = d.getMonth() < 10 ? '0' + d.getMonth() : d.getMonth();
+            return day + '/' + month + '/' + d.getFullYear() + ' ' + hours + ':' + minutes + ':' + seconds;
+        }
+    },
+    computed: _extends({}, (0, _vuex.mapGetters)(['selected', 'hasSelected', 'icon']), {
+        dimensions: function dimensions() {
+            if (!this.selected || !this.selected.dimensions || this.selected.type !== 'image') return;
+            var dimensions = this.selected.dimensions;
+            return dimensions[0] + ' x ' + dimensions[1];
+        },
+        size: function size() {
+            if (!this.selected || !this.selected.size) return;
+            var unit = 'Mo';
+            var size = (1048576 / this.selected.size).toFixed(2);
+            if (size < 1) {
+                unit = 'Ko';
+                size = Math.round(size * 1000);
+            } else if (size >= 1000) {
+                unit = 'Go';
+                size = (size / 1000).toFixed(2);
+            }
+            return size + ' ' + unit;
+        },
+        createdAt: function createdAt() {
+            if (!this.selected || !this.selected.created_at) return;
+            return this.date(this.selected.created_at);
+        },
+        updatedAt: function updatedAt() {
+            if (!this.selected || !this.selected.updated_at) return;
+            return this.date(this.selected.updated_at);
+        }
+    })
+};
+      var $9b70f1 = exports.default || module.exports;
+      if (typeof $9b70f1 === 'function') {
+        $9b70f1 = $9b70f1.options;
+      }
+    
+        /* template */
+        Object.assign($9b70f1, (function () {
+          var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "explorer__file_details" }, [
+    _vm.hasSelected
+      ? _c("div", { staticClass: "file_details__container" }, [
+          _vm.selected.type === "image"
+            ? _c("img", {
+                staticClass: "details__image",
+                attrs: { src: _vm.selected.url, alt: _vm.selected.name }
+              })
+            : _c("div", {
+                staticClass: "details__icon",
+                class: _vm.icon(_vm.selected)
+              }),
+          _vm._v(" "),
+          _c("div", { staticClass: "details__info" }, [
+            _c("h5", { staticClass: "info__name" }, [
+              _vm._v(_vm._s(_vm.selected.title))
+            ]),
+            _vm._v(" "),
+            _c("span", { staticClass: "info__type" }, [
+              _vm._v(_vm._s(_vm.selected.type))
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "details__credentials" }, [
+            _c("h5", { staticClass: "credentials__title" }, [_vm._v("Infos")]),
+            _vm._v(" "),
+            _c("table", { staticClass: "credentials__table" }, [
+              _c("tr", { staticClass: "credentials__table__row" }, [
+                _c("td", { staticClass: "credentials__table__row__title" }, [
+                  _vm._v("Created")
+                ]),
+                _vm._v(" "),
+                _c("td", { staticClass: "credentials__table__row__value" }, [
+                  _vm._v(_vm._s(_vm.createdAt))
+                ])
+              ]),
+              _vm._v(" "),
+              _c("tr", { staticClass: "credentials__table__row" }, [
+                _c("td", { staticClass: "credentials__table__row__title" }, [
+                  _vm._v("Modified")
+                ]),
+                _vm._v(" "),
+                _c("td", { staticClass: "credentials__table__row__value" }, [
+                  _vm._v(_vm._s(_vm.createdAt))
+                ])
+              ]),
+              _vm._v(" "),
+              _vm.selected.type === "image"
+                ? _c("tr", { staticClass: "credentials__table__row" }, [
+                    _c(
+                      "td",
+                      { staticClass: "credentials__table__row__title" },
+                      [_vm._v("Dimensions")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      { staticClass: "credentials__table__row__value" },
+                      [_vm._v(_vm._s(_vm.dimensions))]
+                    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("tr", { staticClass: "credentials__table__row" }, [
+                _c("td", { staticClass: "credentials__table__row__title" }, [
+                  _vm._v("Size")
+                ]),
+                _vm._v(" "),
+                _c("td", { staticClass: "credentials__table__row__value" }, [
+                  _vm._v(_vm._s(_vm.size))
+                ])
+              ]),
+              _vm._v(" "),
+              _vm.selected.author
+                ? _c("tr", { staticClass: "credentials__table__row" }, [
+                    _c(
+                      "td",
+                      { staticClass: "credentials__table__row__title" },
+                      [_vm._v("Author")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      { staticClass: "credentials__table__row__value" },
+                      [_vm._v(_vm._s(_vm.selected.author))]
+                    )
+                  ])
+                : _vm._e()
+            ])
+          ])
+        ])
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+          return {
+            render: render,
+            staticRenderFns: staticRenderFns,
+            _compiled: true,
+            _scopeId: "data-v-9b70f1",
+            functional: undefined
+          };
+        })());
+      
+},{"vuex":30}],34:[function(require,module,exports) {
 module.exports = [
   {
     "type": "folder",
@@ -9016,6 +9223,21 @@ module.exports = [
             ]
           }
         ]
+      }, {
+        "type": "folder",
+        "name": "Videos",
+        "created_at": 1527247843715,
+        "updated_at": 1527247843715
+      }, {
+        "type": "folder",
+        "name": "Music",
+        "created_at": 1527247843715,
+        "updated_at": 1527247843715
+      }, {
+        "type": "folder",
+        "name": "Programs & applications",
+        "created_at": 1527247843715,
+        "updated_at": 1527247843715
       }
     ]
   }, {
@@ -9052,43 +9274,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 var _List = require('./Tree/List');
 
 var _List2 = _interopRequireDefault(_List);
+
+var _Details = require('./Details');
+
+var _Details2 = _interopRequireDefault(_Details);
 
 var _vuex = require('vuex');
 
@@ -9096,66 +9289,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
     name: "Main",
-    components: { List: _List2.default },
-    computed: _extends({}, (0, _vuex.mapGetters)(['collection', 'item', 'selected', 'hasSelected']), {
-        dimensions: function dimensions() {
-            if (!this.selected || !this.selected.dimensions || this.selected.type !== 'image') return;
-            var dimensions = this.selected.dimensions;
-            return dimensions[0] + ' x ' + dimensions[1];
-        },
-        size: function size() {
-            if (!this.selected || !this.selected.size) return;
-            var unit = 'Mo';
-            var size = (1048576 / this.selected.size).toFixed(2);
-            if (size < 1) {
-                unit = 'Ko';
-                size = Math.round(size * 1000);
-            } else if (size >= 1000) {
-                unit = 'Go';
-                size = (size / 1000).toFixed(2);
-            }
-            return size + ' ' + unit;
-        },
-        createdAt: function createdAt() {
-            if (!this.selected || !this.selected.created_at) return;
-            return this.date(this.selected.created_at);
-        },
-        updatedAt: function updatedAt() {
-            if (!this.selected || !this.selected.updated_at) return;
-            return this.date(this.selected.updated_at);
-        }
-    }),
+    components: { List: _List2.default, Details: _Details2.default },
+    computed: (0, _vuex.mapGetters)(['collection', 'item', 'selected', 'hasSelected', 'icon']),
     methods: _extends({}, (0, _vuex.mapActions)(['instanciateTree', 'setItem', 'setSelectedFile']), {
         getContent: function getContent(item) {
             if (item.type === 'folder') this.setItem(item);else this.setSelectedFile(item);
-        },
-        getFileClass: function getFileClass(item) {
-            var icon = 'fa-';
-            switch (item.type) {
-                case 'folder':
-                    icon += 'folder';
-                    break;
-                case 'image':
-                    icon += 'image';
-                    break;
-                case 'pdf':
-                    icon += 'file-pdf';
-                    break;
-                default:
-                    icon += 'file';
-                    break;
-            }
-            return icon;
-        },
-        date: function date(ts) {
-            if (!ts) return '';
-            var d = new Date(ts);
-            var seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
-            var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
-            var hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
-            var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
-            var month = d.getMonth() < 10 ? '0' + d.getMonth() : d.getMonth();
-            return day + '/' + month + '/' + d.getFullYear() + ' ' + hours + ':' + minutes + ':' + seconds;
         }
     }),
     mounted: function mounted() {
@@ -9182,154 +9320,62 @@ exports.default = {
       1
     ),
     _vm._v(" "),
-    _c("article", { staticClass: "explorer__content" }, [
-      _c("div", { staticClass: "explorer__file_listing" }, [
-        _vm.item !== null
-          ? _c(
-              "div",
-              { staticClass: "file_listing__container" },
-              _vm._l(_vm.item.childNodes(), function(node, index) {
-                return _vm.item.hasChildNodes()
-                  ? _c(
-                      "div",
-                      {
-                        key: index,
-                        staticClass: "explorer__file",
-                        class: {
-                          "is-active": node.getId() === _vm.item.getId()
-                        },
-                        attrs: { title: node.name },
-                        on: {
-                          click: function($event) {
-                            _vm.getContent(node)
+    _c(
+      "article",
+      { staticClass: "explorer__content" },
+      [
+        _c("div", { staticClass: "explorer__file_listing" }, [
+          _vm.item !== null
+            ? _c(
+                "div",
+                { staticClass: "file_listing__container" },
+                _vm._l(_vm.item.childNodes(), function(node, index) {
+                  return _vm.item.hasChildNodes()
+                    ? _c(
+                        "div",
+                        {
+                          key: index,
+                          staticClass: "explorer__file",
+                          class: {
+                            active:
+                              _vm.hasSelected &&
+                              node.getId() === _vm.selected.getId()
+                          },
+                          attrs: { title: node.name },
+                          on: {
+                            click: function($event) {
+                              _vm.getContent(node)
+                            }
                           }
-                        }
-                      },
-                      [
-                        _c("i", {
-                          staticClass: "file__icon fa",
-                          class: _vm.getFileClass(node)
-                        }),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "file__name" }, [
-                          _vm._v(_vm._s(node.name))
-                        ])
-                      ]
-                    )
-                  : _vm._e()
-              })
-            )
-          : _vm._e()
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "explorer__file_details" }, [
-        _vm.hasSelected
-          ? _c("div", { staticClass: "file_details__container" }, [
-              _vm.selected.type === "image"
-                ? _c("img", {
-                    staticClass: "details__image",
-                    attrs: { src: _vm.selected.url, alt: _vm.selected.name }
-                  })
-                : _c("div", {
-                    staticClass: "details__icon fa",
-                    class: _vm.getFileClass(_vm.item)
-                  }),
-              _vm._v(" "),
-              _c("div", { staticClass: "details__info" }, [
-                _c("h5", { staticClass: "info__name" }, [
-                  _vm._v(_vm._s(_vm.selected.title))
-                ]),
-                _vm._v(" "),
-                _c("span", { staticClass: "info__type" }, [
-                  _vm._v(_vm._s(_vm.selected.type))
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "details__credentials" }, [
-                _c("h5", { staticClass: "credentials__title" }, [
-                  _vm._v("Infos")
-                ]),
-                _vm._v(" "),
-                _c("table", { staticClass: "credentials__table" }, [
-                  _c("tr", { staticClass: "credentials__table__row" }, [
-                    _c(
-                      "td",
-                      { staticClass: "credentials__table__row__title" },
-                      [_vm._v("Created")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "td",
-                      { staticClass: "credentials__table__row__value" },
-                      [_vm._v(_vm._s(_vm.createdAt))]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("tr", { staticClass: "credentials__table__row" }, [
-                    _c(
-                      "td",
-                      { staticClass: "credentials__table__row__title" },
-                      [_vm._v("Modified")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "td",
-                      { staticClass: "credentials__table__row__value" },
-                      [_vm._v(_vm._s(_vm.createdAt))]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _vm.selected.type === "image"
-                    ? _c("tr", { staticClass: "credentials__table__row" }, [
-                        _c(
-                          "td",
-                          { staticClass: "credentials__table__row__title" },
-                          [_vm._v("Dimensions")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "td",
-                          { staticClass: "credentials__table__row__value" },
-                          [_vm._v(_vm._s(_vm.dimensions))]
-                        )
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c("tr", { staticClass: "credentials__table__row" }, [
-                    _c(
-                      "td",
-                      { staticClass: "credentials__table__row__title" },
-                      [_vm._v("Size")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "td",
-                      { staticClass: "credentials__table__row__value" },
-                      [_vm._v(_vm._s(_vm.size))]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _vm.selected.author
-                    ? _c("tr", { staticClass: "credentials__table__row" }, [
-                        _c(
-                          "td",
-                          { staticClass: "credentials__table__row__title" },
-                          [_vm._v("Author")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "td",
-                          { staticClass: "credentials__table__row__value" },
-                          [_vm._v(_vm._s(_vm.selected.author))]
-                        )
-                      ])
+                        },
+                        [
+                          node.type === "image"
+                            ? _c("div", {
+                                staticClass: "file__thumbnail",
+                                style: {
+                                  backgroundImage: "url(" + node.url + ")"
+                                }
+                              })
+                            : _c("i", {
+                                staticClass: "file__icon",
+                                class: _vm.icon(node)
+                              }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "file__name" }, [
+                            _vm._v(_vm._s(node.name))
+                          ])
+                        ]
+                      )
                     : _vm._e()
-                ])
-              ])
-            ])
-          : _vm._e()
-      ])
-    ])
+                })
+              )
+            : _vm._e()
+        ]),
+        _vm._v(" "),
+        _c("Details")
+      ],
+      1
+    )
   ])
 }
 var staticRenderFns = []
@@ -9344,7 +9390,7 @@ render._withStripped = true
           };
         })());
       
-},{"./Tree/List":29,"vuex":30,"../../collection":34}],21:[function(require,module,exports) {
+},{"./Tree/List":29,"./Details":53,"vuex":30,"../../collection":34}],21:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9414,48 +9460,64 @@ render._withStripped = true
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 var tree = exports.tree = function tree(state) {
-  return state.tree || null;
+    return state.tree || null;
 };
 var collection = exports.collection = function collection(state) {
-  return state.tree ? state.tree.data : null;
+    return state.tree ? state.tree.data : null;
 };
 var item = exports.item = function item(state) {
-  return state.item || null;
+    return state.item || null;
+};
+var hasItem = exports.hasItem = function hasItem(state) {
+    return state.item !== null;
 };
 var selected = exports.selected = function selected(state) {
-  return state.selected || null;
-};
-var isFolder = exports.isFolder = function isFolder(state) {
-  return state.item && state.item.type === 'folder';
+    return state.selected || null;
 };
 var hasSelected = exports.hasSelected = function hasSelected(state) {
-  return state.selected !== null;
+    return state.selected !== null;
+};
+var isFolder = exports.isFolder = function isFolder(state) {
+    return state.item && state.item.type === 'folder';
 };
 var prevItem = exports.prevItem = function prevItem(state) {
-  return state.item ? state.item.previousNode() : null;
+    return state.item ? state.item.previousNode() : null;
 };
 var nextItem = exports.nextItem = function nextItem(state) {
-  return state.item ? state.item.nextNode() : null;
+    return state.item ? state.item.nextNode() : null;
 };
 var parentItem = exports.parentItem = function parentItem(state) {
-  return state.item ? state.item.parentNode() : null;
+    return state.item ? state.item.parentNode() : null;
 };
 var rootItem = exports.rootItem = function rootItem(state) {
-  return state.item ? state.item.rootNode() : null;
-};
-var depth = exports.depth = function depth(state) {
-  return state.item ? state.item.depth() : 0;
+    return state.item ? state.item.rootNode() : null;
 };
 var breadcrumb = exports.breadcrumb = function breadcrumb(state) {
-  return state.item ? state.item.breadcrumb() : [];
+    return state.item ? state.item.breadcrumb() : [];
 };
 var hasOpened = exports.hasOpened = function hasOpened(state) {
-  return function (id) {
-    return state.opened.includes(id);
-  };
+    return function (id) {
+        return state.opened.includes(id);
+    };
+};
+var icon = exports.icon = function icon() {
+    return function (node) {
+        var default_icon = 'fa fa-file';
+        if (!node || !node.type) return default_icon;
+        switch (node.type) {
+            case 'folder':
+                return 'fa fa-folder';
+            case 'image':
+                return 'fa fa-image';
+            case 'pdf':
+                return 'fa fa-file-pdf';
+            default:
+                return default_icon;
+        }
+    };
 };
 },{}],32:[function(require,module,exports) {
 'use strict';

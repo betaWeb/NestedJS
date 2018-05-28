@@ -165,6 +165,7 @@ class Nested {
      * @returns {Node[]}
      */
     buildTree(data = [], parentid = null, rootid = null, depth = 0) {
+        let currentDepth = depth
         let tree = data.reduce((acc, node) => {
             if (node.constructor !== Node)
                 node = new Node(node, this._uniqueid)
@@ -178,10 +179,11 @@ class Nested {
                 node.setProperty(properties.root_id, null)
             } else node.setProperty(properties.root_id, rootid)
 
-            node.setProperty(properties.depth, depth)
+            node.setProperty(properties.depth, currentDepth)
 
-            if (node.hasChildNodes())
+            if (node.hasChildNodes()) {
                 node.setProperty(this.options.children_key, this.buildTree(node.childNodes(), node.getId(), rootid, depth += 1))
+            }
 
             acc.push(node)
 

@@ -97,6 +97,21 @@
             ]
           }
         ]
+      }, {
+        "type": "folder",
+        "name": "Videos",
+        "created_at": 1527247843715,
+        "updated_at": 1527247843715
+      }, {
+        "type": "folder",
+        "name": "Music",
+        "created_at": 1527247843715,
+        "updated_at": 1527247843715
+      }, {
+        "type": "folder",
+        "name": "Programs & applications",
+        "created_at": 1527247843715,
+        "updated_at": 1527247843715
       }
     ]
   }, {

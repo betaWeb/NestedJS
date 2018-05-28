@@ -27,12 +27,12 @@
             }
         },
         computed: {
-            ...mapGetters(['item', 'depth']),
+            ...mapGetters(['item']),
             isActive() {
                 return this.item !== null && this.item.getId() === this.node.getId()
             },
             paddingShift() {
-                return `${10 * this.depth}px`
+                return `${10 * (this.node.depth() + 1)}px`
             }
         },
         methods: {
