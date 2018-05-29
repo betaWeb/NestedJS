@@ -2,8 +2,6 @@
 This library allows you to deal with deep nested arrays in JavaScript.<br>
 Navigate into nested collections can be tricky, so NestedJS try to get it easier.
 
-You can find here a [live demo](https://codepen.io/betaweb/pen/XqwEpE) with very basic example.
-
 <br>
 
 ## Getting started
@@ -49,6 +47,7 @@ The created instance transform the collection and add several properties and met
  - `__rootid` : tag the root node id of a node if exists, null otherwise
  - `__previd` : tag the previous node id of a node if exists, null otherwise
  - `__nextid` : tag the next node id of a node if exists, null otherwise
+ - `__depth` : tag the node depth (0 to n)
 
  > To know the added properties on each node you must debug your collection, or you can simply browse it with a recursive loop.
 
@@ -188,6 +187,11 @@ This will returns a node which is an instance of the NestedJS's `Node` class. Th
 - returns NestedJS instance :
 ```JS
     node.getTree()
+```
+
+- returns node depth :
+```JS
+    node.depth()
 ```
 
 > Each node original properties are preserved and are transferred as properties of the NestedJS's `Node` class.
