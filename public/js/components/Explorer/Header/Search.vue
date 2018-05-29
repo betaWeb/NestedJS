@@ -1,7 +1,7 @@
 <template>
     <div class="nav__search">
         <div class="search__content">
-            <input id="search" name="search" type="text" />
+            <input id="search" name="search" type="text"/>
         </div>
     </div>
 </template>

@@ -98,7 +98,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({20:[function(require,module,exports) {
+})({7:[function(require,module,exports) {
 var global = arguments[3];
 'use strict';
 
@@ -7379,7 +7379,7 @@ if (inBrowser) {
 /*  */
 
 exports.default = Vue;
-},{}],22:[function(require,module,exports) {
+},{}],9:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7432,7 +7432,7 @@ render._withStripped = true
           };
         })());
       
-},{}],31:[function(require,module,exports) {
+},{}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8390,7 +8390,7 @@ exports.mapGetters = mapGetters;
 exports.mapActions = mapActions;
 exports.createNamespacedHelpers = createNamespacedHelpers;
 exports.default = index_esm;
-},{}],27:[function(require,module,exports) {
+},{}],16:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8398,6 +8398,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+//
 //
 //
 //
@@ -8501,7 +8502,7 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":31}],28:[function(require,module,exports) {
+},{"vuex":12}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8509,6 +8510,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+//
 //
 //
 //
@@ -8587,7 +8589,7 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":31}],29:[function(require,module,exports) {
+},{"vuex":12}],18:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8641,7 +8643,7 @@ render._withStripped = true
           };
         })());
       
-},{}],23:[function(require,module,exports) {
+},{}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8703,7 +8705,7 @@ render._withStripped = true
           };
         })());
       
-},{"./Header/Actions":27,"./Header/Breadcrumb":28,"./Header/Search":29}],36:[function(require,module,exports) {
+},{"./Header/Actions":16,"./Header/Breadcrumb":17,"./Header/Search":18}],23:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8826,7 +8828,7 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":31}],30:[function(require,module,exports) {
+},{"vuex":12}],19:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8851,6 +8853,7 @@ exports.default = {
         }
     }
 }; //
+//
 //
 //
 //
@@ -8915,7 +8918,7 @@ render._withStripped = true
           };
         })());
       
-},{"./Item":36}],26:[function(require,module,exports) {
+},{"./Item":23}],15:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9123,7 +9126,203 @@ render._withStripped = true
           };
         })());
       
-},{"vuex":31}],35:[function(require,module,exports) {
+},{"vuex":12}],30:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var _Details = require('./Details');
+
+var _Details2 = _interopRequireDefault(_Details);
+
+var _vuex = require('vuex');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    name: "Explorer",
+    components: { Details: _Details2.default },
+    computed: (0, _vuex.mapGetters)(['item', 'selected', 'hasSelected', 'icon']),
+    methods: _extends({}, (0, _vuex.mapActions)(['setItem', 'setSelectedFile']), {
+        getContent: function getContent(item) {
+            if (item.type === 'folder') this.setItem(item);else this.setSelectedFile(item);
+        }
+    })
+};
+      var $d0cdf4 = exports.default || module.exports;
+      if (typeof $d0cdf4 === 'function') {
+        $d0cdf4 = $d0cdf4.options;
+      }
+    
+        /* template */
+        Object.assign($d0cdf4, (function () {
+          var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "article",
+    { staticClass: "explorer__content" },
+    [
+      _c("div", { staticClass: "explorer__file_listing" }, [
+        _vm.item !== null
+          ? _c(
+              "div",
+              { staticClass: "file_listing__container" },
+              _vm._l(_vm.item.childNodes(), function(node, index) {
+                return _vm.item.hasChildNodes()
+                  ? _c(
+                      "div",
+                      {
+                        key: index,
+                        staticClass: "explorer__file",
+                        class: {
+                          active:
+                            _vm.hasSelected &&
+                            node.getId() === _vm.selected.getId()
+                        },
+                        attrs: { title: node.name },
+                        on: {
+                          click: function($event) {
+                            _vm.getContent(node)
+                          }
+                        }
+                      },
+                      [
+                        node.type === "image"
+                          ? _c("div", {
+                              staticClass: "file__thumbnail",
+                              style: {
+                                backgroundImage: "url(" + node.url + ")"
+                              }
+                            })
+                          : _c("i", {
+                              staticClass: "file__icon",
+                              class: _vm.icon(node)
+                            }),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "file__name" }, [
+                          _vm._v(_vm._s(node.name))
+                        ])
+                      ]
+                    )
+                  : _vm._e()
+              })
+            )
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _c("Details")
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+          return {
+            render: render,
+            staticRenderFns: staticRenderFns,
+            _compiled: true,
+            _scopeId: "data-v-d0cdf4",
+            functional: undefined
+          };
+        })());
+      
+},{"./Details":15,"vuex":12}],11:[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _List = require('./Tree/List');
+
+var _List2 = _interopRequireDefault(_List);
+
+var _Explorer = require('./Explorer');
+
+var _Explorer2 = _interopRequireDefault(_Explorer);
+
+var _vuex = require('vuex');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    name: "Main",
+    components: { List: _List2.default, Explorer: _Explorer2.default },
+    computed: (0, _vuex.mapGetters)(['collection']),
+    methods: (0, _vuex.mapActions)(['setItem', 'setSelectedFile'])
+}; //
+//
+//
+//
+//
+//
+//
+//
+//
+      var $b37bc8 = exports.default || module.exports;
+      if (typeof $b37bc8 === 'function') {
+        $b37bc8 = $b37bc8.options;
+      }
+    
+        /* template */
+        Object.assign($b37bc8, (function () {
+          var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "section",
+    { staticClass: "explorer__body" },
+    [
+      _c(
+        "aside",
+        { staticClass: "explorer__tree" },
+        [_c("List", { attrs: { list: _vm.collection } })],
+        1
+      ),
+      _vm._v(" "),
+      _c("Explorer")
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+          return {
+            render: render,
+            staticRenderFns: staticRenderFns,
+            _compiled: true,
+            _scopeId: null,
+            functional: undefined
+          };
+        })());
+      
+},{"./Tree/List":19,"./Explorer":30,"vuex":12}],14:[function(require,module,exports) {
 module.exports = [
   {
     "type": "folder",
@@ -9247,150 +9446,7 @@ module.exports = [
     "updated_at": 1527247843715
   }
 ];
-},{}],24:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var _List = require('./Tree/List');
-
-var _List2 = _interopRequireDefault(_List);
-
-var _Details = require('./Details');
-
-var _Details2 = _interopRequireDefault(_Details);
-
-var _vuex = require('vuex');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    name: "Main",
-    components: { List: _List2.default, Details: _Details2.default },
-    computed: (0, _vuex.mapGetters)(['collection', 'item', 'selected', 'hasSelected', 'icon']),
-    methods: _extends({}, (0, _vuex.mapActions)(['instanciateTree', 'setItem', 'setSelectedFile']), {
-        getContent: function getContent(item) {
-            if (item.type === 'folder') this.setItem(item);else this.setSelectedFile(item);
-        }
-    }),
-    mounted: function mounted() {
-        var collection = require('../../collection');
-        this.instanciateTree(collection);
-    }
-};
-      var $b37bc8 = exports.default || module.exports;
-      if (typeof $b37bc8 === 'function') {
-        $b37bc8 = $b37bc8.options;
-      }
-    
-        /* template */
-        Object.assign($b37bc8, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("section", { staticClass: "explorer__body" }, [
-    _c(
-      "aside",
-      { staticClass: "explorer__tree" },
-      [_c("List", { attrs: { list: _vm.collection } })],
-      1
-    ),
-    _vm._v(" "),
-    _c(
-      "article",
-      { staticClass: "explorer__content" },
-      [
-        _c("div", { staticClass: "explorer__file_listing" }, [
-          _vm.item !== null
-            ? _c(
-                "div",
-                { staticClass: "file_listing__container" },
-                _vm._l(_vm.item.childNodes(), function(node, index) {
-                  return _vm.item.hasChildNodes()
-                    ? _c(
-                        "div",
-                        {
-                          key: index,
-                          staticClass: "explorer__file",
-                          class: {
-                            active:
-                              _vm.hasSelected &&
-                              node.getId() === _vm.selected.getId()
-                          },
-                          attrs: { title: node.name },
-                          on: {
-                            click: function($event) {
-                              _vm.getContent(node)
-                            }
-                          }
-                        },
-                        [
-                          node.type === "image"
-                            ? _c("div", {
-                                staticClass: "file__thumbnail",
-                                style: {
-                                  backgroundImage: "url(" + node.url + ")"
-                                }
-                              })
-                            : _c("i", {
-                                staticClass: "file__icon",
-                                class: _vm.icon(node)
-                              }),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "file__name" }, [
-                            _vm._v(_vm._s(node.name))
-                          ])
-                        ]
-                      )
-                    : _vm._e()
-                })
-              )
-            : _vm._e()
-        ]),
-        _vm._v(" "),
-        _c("Details")
-      ],
-      1
-    )
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: null,
-            functional: undefined
-          };
-        })());
-      
-},{"./Tree/List":30,"./Details":26,"vuex":31,"../../collection":35}],21:[function(require,module,exports) {
+},{}],8:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9409,21 +9465,30 @@ var _Main = require('./Explorer/Main');
 
 var _Main2 = _interopRequireDefault(_Main);
 
+var _vuex = require('vuex');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
     name: "App",
-    components: { Header: _Header2.default, Nav: _Nav2.default, Main: _Main2.default }
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
+    components: { Header: _Header2.default, Nav: _Nav2.default, Main: _Main2.default },
+    methods: (0, _vuex.mapActions)(['instanciateTree']),
+    mounted: function mounted() {
+        var collection = require('../collection');
+        this.instanciateTree(collection);
+    }
+};
       var $ecd70f = exports.default || module.exports;
       if (typeof $ecd70f === 'function') {
         $ecd70f = $ecd70f.options;
@@ -9456,7 +9521,7 @@ render._withStripped = true
           };
         })());
       
-},{"./Explorer/Header":22,"./Explorer/Nav":23,"./Explorer/Main":24}],32:[function(require,module,exports) {
+},{"./Explorer/Header":9,"./Explorer/Nav":10,"./Explorer/Main":11,"vuex":12,"../collection":14}],20:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9519,7 +9584,7 @@ var icon = exports.icon = function icon() {
         }
     };
 };
-},{}],33:[function(require,module,exports) {
+},{}],21:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9548,7 +9613,7 @@ var toggleOpened = exports.toggleOpened = function toggleOpened(_ref4, id) {
 
     commit('toggleOpened', id);
 };
-},{}],34:[function(require,module,exports) {
+},{}],22:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9571,7 +9636,7 @@ var toggleOpened = exports.toggleOpened = function toggleOpened(state, id) {
         return i !== id;
     });else state.opened.push(id);
 };
-},{}],25:[function(require,module,exports) {
+},{}],13:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9618,7 +9683,7 @@ exports.default = new _vuex2.default.Store({
     actions: actions,
     mutations: mutations
 });
-},{"vue":20,"vuex":31,"./getters":32,"./actions":33,"./mutations":34}],4:[function(require,module,exports) {
+},{"vue":7,"vuex":12,"./getters":20,"./actions":21,"./mutations":22}],6:[function(require,module,exports) {
 'use strict';
 
 var _vue = require('vue');
@@ -9642,5 +9707,5 @@ new _vue2.default({
         return h(_App2.default);
     }
 });
-},{"vue":20,"./components/App":21,"./store":25}]},{},[4], null)
+},{"vue":7,"./components/App":8,"./store":13}]},{},[6], null)
 //# sourceMappingURL=/app.8e46537c.map

@@ -1,7 +1,8 @@
 <template>
     <div class="nav__actions">
         <div class="actions__left">
-            <button class="action__button action__prev" @click="getParentItem()"><i class="fa fa-arrow-left"></i></button>
+            <button class="action__button action__prev" @click="getParentItem()"><i class="fa fa-arrow-left"></i>
+            </button>
             <button class="action__button action__next"><i class="fa fa-arrow-right"></i></button>
             <button class="action__button action__undo"><i class="fa fa-undo"></i></button>
         </div>
@@ -12,7 +13,8 @@
 </template>
 
 <script>
-    import { mapGetters, mapActions } from 'vuex'
+    import {mapGetters, mapActions} from 'vuex'
+
     export default {
         name: "Actions",
         methods: {

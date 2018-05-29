@@ -11,7 +11,7 @@
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex'
+    import {mapActions, mapGetters} from 'vuex'
 
     export default {
         name: "Item",
@@ -21,7 +21,7 @@
                 default: {}
             }
         },
-        data () {
+        data() {
             return {
                 opened: false
             }
