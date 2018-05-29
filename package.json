@@ -1,6 +1,6 @@
 {
   "name": "collectr",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Deal with nested collections in JavaScript with NestedJS",
   "main": "index.js",
   "author": "betaWeb <betaweb34@gmail.com>",
@@ -42,7 +42,7 @@
     "sinon": "^5.0.10",
     "vue-loader": "^15.2.2",
     "vue-template-compiler": "^2.5.16",
-    "webpack": "^4.9.1",
+    "webpack": "^4.10.0",
     "webpack-cli": "^2.1.4"
   },
   "dependencies": {
