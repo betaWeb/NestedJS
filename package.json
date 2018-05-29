@@ -25,7 +25,7 @@
   "scripts": {
     "parcel_dev": "parcel -p 3000 public/index.html --no-hmr --out-dir ./public/dist",
     "_parcel_build": "parcel build index.js --out-dir public/build --out-file Nested.js --no-minify",
-    "parcel_build": "parcel build public/index.html --out-dir public/build",
+    "parcel_build": "rm public/build -rf && parcel build public/index.html --out-dir public/build",
     "build": "./node_modules/.bin/webpack --mode production -c webpack.config.js",
     "test": "./node_modules/.bin/mocha --reporter spec --watch"
   },
