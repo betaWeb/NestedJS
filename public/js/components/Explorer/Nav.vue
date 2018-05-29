@@ -7,9 +7,9 @@
 </template>
 
 <script>
-    import Actions from './Header/Actions'
-    import Breadcrumb from './Header/Breadcrumb'
-    import Search from './Header/Search'
+    import Actions from './Header/Actions.vue'
+    import Breadcrumb from './Header/Breadcrumb.vue'
+    import Search from './Header/Search.vue'
 
     export default {
         name: "Nav",

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-    import Item from './Item'
+    import Item from './Item.vue'
 
     export default {
         name: "List",

@@ -8,8 +8,8 @@
 </template>
 
 <script>
-    import List from './Tree/List'
-    import Explorer from './Explorer'
+    import List from './Tree/List.vue'
+    import Explorer from './Explorer.vue'
     import {mapActions, mapGetters} from 'vuex'
 
     export default {

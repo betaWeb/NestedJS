@@ -6,19 +6,17 @@
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
 
-// eslint-disable-next-line no-global-assign
-parcelRequire = (function (modules, cache, entry, globalName) {
+require = (function (modules, cache, entry) {
   // Save the require from previous bundle to this closure if any
-  var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
-  var nodeRequire = typeof require === 'function' && require;
+  var previousRequire = typeof require === "function" && require;
 
-  function newRequire(name, jumped) {
+  function newRequire(name, jumped, ModuleConfig) {
     if (!cache[name]) {
       if (!modules[name]) {
         // if we cannot find the module within our internal map or
         // cache jump to the current global require ie. the last bundle
         // that was added to the page.
-        var currentRequire = typeof parcelRequire === 'function' && parcelRequire;
+        var currentRequire = typeof require === "function" && require;
         if (!jumped && currentRequire) {
           return currentRequire(name, true);
         }
@@ -31,21 +29,16 @@ parcelRequire = (function (modules, cache, entry, globalName) {
           return previousRequire(name, true);
         }
 
-        // Try the node require function if it exists.
-        if (nodeRequire && typeof name === 'string') {
-          return nodeRequire(name);
-        }
-
         var err = new Error('Cannot find module \'' + name + '\'');
         err.code = 'MODULE_NOT_FOUND';
         throw err;
       }
-
+      
       localRequire.resolve = resolve;
 
-      var module = cache[name] = new newRequire.Module(name);
+      var module = cache[name] = new newRequire.Module(ModuleConfig);
 
-      modules[name][0].call(module.exports, localRequire, module, module.exports, this);
+      modules[name][0].call(module.exports, localRequire, module, module.exports);
     }
 
     return cache[name].exports;
@@ -59,13 +52,11 @@ parcelRequire = (function (modules, cache, entry, globalName) {
     }
   }
 
-  function Module(moduleName) {
-    this.id = moduleName;
+  function Module() {
     this.bundle = newRequire;
     this.exports = {};
   }
 
-  newRequire.isParcelRequire = true;
   newRequire.Module = Module;
   newRequire.modules = modules;
   newRequire.cache = cache;
@@ -73,27 +64,6 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   for (var i = 0; i < entry.length; i++) {
     newRequire(entry[i]);
-  }
-
-  if (entry.length) {
-    // Expose entry point to Node, AMD or browser globals
-    // Based on https://github.com/ForbesLindesay/umd/blob/master/template.js
-    var mainExports = newRequire(entry[entry.length - 1]);
-
-    // CommonJS
-    if (typeof exports === "object" && typeof module !== "undefined") {
-      module.exports = mainExports;
-
-    // RequireJS
-    } else if (typeof define === "function" && define.amd) {
-     define(function () {
-       return mainExports;
-     });
-
-    // <script>
-    } else if (globalName) {
-      this[globalName] = mainExports;
-    }
   }
 
   // Override the current require with this new one
@@ -7379,60 +7349,287 @@ if (inBrowser) {
 /*  */
 
 exports.default = Vue;
-},{}],20:[function(require,module,exports) {
-"use strict";
+},{}],11:[function(require,module,exports) {
+var Vue // late bind
+var version
+var map = (window.__VUE_HOT_MAP__ = Object.create(null))
+var installed = false
+var isBrowserify = false
+var initHookName = 'beforeCreate'
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-//
-//
-//
-//
-//
-//
-//
-//
+exports.install = function (vue, browserify) {
+  if (installed) { return }
+  installed = true
 
-exports.default = {
-    name: "Header",
-    data: function data() {
-        return {
-            title: 'NestedJS File Explorer'
-        };
-    }
-};
-      var $3183d0 = exports.default || module.exports;
-      if (typeof $3183d0 === 'function') {
-        $3183d0 = $3183d0.options;
-      }
-    
-        /* template */
-        Object.assign($3183d0, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("header", { staticClass: "explorer__header" }, [
-    _c("div", { staticClass: "header__title" }, [
-      _c("i", { staticClass: "header__logo fa fa-folder" }),
-      _vm._v(" " + _vm._s(_vm.title) + "\n    ")
-    ])
-  ])
+  Vue = vue.__esModule ? vue.default : vue
+  version = Vue.version.split('.').map(Number)
+  isBrowserify = browserify
+
+  // compat with < 2.0.0-alpha.7
+  if (Vue.config._lifecycleHooks.indexOf('init') > -1) {
+    initHookName = 'init'
+  }
+
+  exports.compatible = version[0] >= 2
+  if (!exports.compatible) {
+    console.warn(
+      '[HMR] You are using a version of vue-hot-reload-api that is ' +
+        'only compatible with Vue.js core ^2.0.0.'
+    )
+    return
+  }
 }
-var staticRenderFns = []
-render._withStripped = true
 
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: null,
-            functional: undefined
-          };
-        })());
-      
-},{}],16:[function(require,module,exports) {
+/**
+ * Create a record for a hot module, which keeps track of its constructor
+ * and instances
+ *
+ * @param {String} id
+ * @param {Object} options
+ */
+
+exports.createRecord = function (id, options) {
+  if(map[id]) { return }
+  
+  var Ctor = null
+  if (typeof options === 'function') {
+    Ctor = options
+    options = Ctor.options
+  }
+  makeOptionsHot(id, options)
+  map[id] = {
+    Ctor: Ctor,
+    options: options,
+    instances: []
+  }
+}
+
+/**
+ * Check if module is recorded
+ *
+ * @param {String} id
+ */
+
+exports.isRecorded = function (id) {
+  return typeof map[id] !== 'undefined'
+}
+
+/**
+ * Make a Component options object hot.
+ *
+ * @param {String} id
+ * @param {Object} options
+ */
+
+function makeOptionsHot(id, options) {
+  if (options.functional) {
+    var render = options.render
+    options.render = function (h, ctx) {
+      var instances = map[id].instances
+      if (ctx && instances.indexOf(ctx.parent) < 0) {
+        instances.push(ctx.parent)
+      }
+      return render(h, ctx)
+    }
+  } else {
+    injectHook(options, initHookName, function() {
+      var record = map[id]
+      if (!record.Ctor) {
+        record.Ctor = this.constructor
+      }
+      record.instances.push(this)
+    })
+    injectHook(options, 'beforeDestroy', function() {
+      var instances = map[id].instances
+      instances.splice(instances.indexOf(this), 1)
+    })
+  }
+}
+
+/**
+ * Inject a hook to a hot reloadable component so that
+ * we can keep track of it.
+ *
+ * @param {Object} options
+ * @param {String} name
+ * @param {Function} hook
+ */
+
+function injectHook(options, name, hook) {
+  var existing = options[name]
+  options[name] = existing
+    ? Array.isArray(existing) ? existing.concat(hook) : [existing, hook]
+    : [hook]
+}
+
+function tryWrap(fn) {
+  return function (id, arg) {
+    try {
+      fn(id, arg)
+    } catch (e) {
+      console.error(e)
+      console.warn(
+        'Something went wrong during Vue component hot-reload. Full reload required.'
+      )
+    }
+  }
+}
+
+function updateOptions (oldOptions, newOptions) {
+  for (var key in oldOptions) {
+    if (!(key in newOptions)) {
+      delete oldOptions[key]
+    }
+  }
+  for (var key$1 in newOptions) {
+    oldOptions[key$1] = newOptions[key$1]
+  }
+}
+
+exports.rerender = tryWrap(function (id, options) {
+  var record = map[id]
+  if (!options) {
+    record.instances.slice().forEach(function (instance) {
+      instance.$forceUpdate()
+    })
+    return
+  }
+  if (typeof options === 'function') {
+    options = options.options
+  }
+  if (record.Ctor) {
+    record.Ctor.options.render = options.render
+    record.Ctor.options.staticRenderFns = options.staticRenderFns
+    record.instances.slice().forEach(function (instance) {
+      instance.$options.render = options.render
+      instance.$options.staticRenderFns = options.staticRenderFns
+      // reset static trees
+      // pre 2.5, all static trees are cahced together on the instance
+      if (instance._staticTrees) {
+        instance._staticTrees = []
+      }
+      // 2.5.0
+      if (Array.isArray(record.Ctor.options.cached)) {
+        record.Ctor.options.cached = []
+      }
+      // 2.5.3
+      if (Array.isArray(instance.$options.cached)) {
+        instance.$options.cached = []
+      }
+      // post 2.5.4: v-once trees are cached on instance._staticTrees.
+      // Pure static trees are cached on the staticRenderFns array
+      // (both already reset above)
+      instance.$forceUpdate()
+    })
+  } else {
+    // functional or no instance created yet
+    record.options.render = options.render
+    record.options.staticRenderFns = options.staticRenderFns
+
+    // handle functional component re-render
+    if (record.options.functional) {
+      // rerender with full options
+      if (Object.keys(options).length > 2) {
+        updateOptions(record.options, options)
+      } else {
+        // template-only rerender.
+        // need to inject the style injection code for CSS modules
+        // to work properly.
+        var injectStyles = record.options._injectStyles
+        if (injectStyles) {
+          var render = options.render
+          record.options.render = function (h, ctx) {
+            injectStyles.call(ctx)
+            return render(h, ctx)
+          }
+        }
+      }
+      record.options._Ctor = null
+      // 2.5.3
+      if (Array.isArray(record.options.cached)) {
+        record.options.cached = []
+      }
+      record.instances.slice().forEach(function (instance) {
+        instance.$forceUpdate()
+      })
+    }
+  }
+})
+
+exports.reload = tryWrap(function (id, options) {
+  var record = map[id]
+  if (options) {
+    if (typeof options === 'function') {
+      options = options.options
+    }
+    makeOptionsHot(id, options)
+    if (record.Ctor) {
+      if (version[1] < 2) {
+        // preserve pre 2.2 behavior for global mixin handling
+        record.Ctor.extendOptions = options
+      }
+      var newCtor = record.Ctor.super.extend(options)
+      record.Ctor.options = newCtor.options
+      record.Ctor.cid = newCtor.cid
+      record.Ctor.prototype = newCtor.prototype
+      if (newCtor.release) {
+        // temporary global mixin strategy used in < 2.0.0-alpha.6
+        newCtor.release()
+      }
+    } else {
+      updateOptions(record.options, options)
+    }
+  }
+  record.instances.slice().forEach(function (instance) {
+    if (instance.$vnode && instance.$vnode.context) {
+      instance.$vnode.context.$forceUpdate()
+    } else {
+      console.warn(
+        'Root or manually mounted instance modified. Full reload required.'
+      )
+    }
+  })
+})
+
+},{}],7:[function(require,module,exports) {
+;(function () {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = {
+        name: "Header",
+        data: function data() {
+            return {
+                title: 'NestedJS File Explorer'
+            };
+        }
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
+}
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('header', { staticClass: "explorer__header" }, [_c('div', { staticClass: "header__title" }, [_c('i', { staticClass: "header__logo fa fa-folder" }), _vm._v(" " + _vm._s(_vm.title) + "\n    ")])]);
+};
+__vue__options__.staticRenderFns = [];
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-7024d67e", __vue__options__);
+        } else {
+            hotAPI.rerender("data-v-7024d67e", __vue__options__);
+        }
+    })();
+}
+},{"vue-hot-reload-api":11,"vue":5}],10:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8390,939 +8587,553 @@ exports.mapGetters = mapGetters;
 exports.mapActions = mapActions;
 exports.createNamespacedHelpers = createNamespacedHelpers;
 exports.default = index_esm;
-},{}],35:[function(require,module,exports) {
-'use strict';
+},{}],13:[function(require,module,exports) {
+;(function () {
+    'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var _vuex = require('vuex');
-
-exports.default = {
-    name: "Actions",
-    methods: _extends({}, (0, _vuex.mapActions)(['setItem']), {
-        getParentItem: function getParentItem() {
-            this.setItem(this.parentItem);
-        },
-        getRootItem: function getRootItem() {
-            this.setItem(this.rootItem);
-        }
-    }),
-    computed: _extends({}, (0, _vuex.mapGetters)(['parentItem', 'rootItem']))
-};
-      var $6e8917 = exports.default || module.exports;
-      if (typeof $6e8917 === 'function') {
-        $6e8917 = $6e8917.options;
-      }
-    
-        /* template */
-        Object.assign($6e8917, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "nav__actions" }, [
-    _c("div", { staticClass: "actions__left" }, [
-      _c(
-        "button",
-        {
-          staticClass: "action__button action__prev",
-          on: {
-            click: function($event) {
-              _vm.getParentItem()
-            }
-          }
-        },
-        [_c("i", { staticClass: "fa fa-arrow-left" })]
-      ),
-      _vm._v(" "),
-      _vm._m(0),
-      _vm._v(" "),
-      _vm._m(1)
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "actions__right" }, [
-      _c(
-        "button",
-        {
-          staticClass: "action__button action__up",
-          on: {
-            click: function($event) {
-              _vm.getRootItem()
-            }
-          }
-        },
-        [_c("i", { staticClass: "fa fa-arrow-up" })]
-      )
-    ])
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "action__button action__next" }, [
-      _c("i", { staticClass: "fa fa-arrow-right" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "action__button action__undo" }, [
-      _c("i", { staticClass: "fa fa-undo" })
-    ])
-  }
-]
-render._withStripped = true
-
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: "data-v-6e8917",
-            functional: undefined
-          };
-        })());
-      
-},{"vuex":16}],36:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var _vuex = require('vuex');
-
-exports.default = {
-    name: "Breadcrumb",
-    methods: _extends({}, (0, _vuex.mapActions)(['setItem']), {
-        isLast: function isLast(index) {
-            return index === this.breadcrumb.length - 1;
-        },
-        goTo: function goTo(node) {
-            this.setItem(node);
-        }
-    }),
-    computed: _extends({}, (0, _vuex.mapGetters)(['breadcrumb']))
-};
-      var $621d4c = exports.default || module.exports;
-      if (typeof $621d4c === 'function') {
-        $621d4c = $621d4c.options;
-      }
-    
-        /* template */
-        Object.assign($621d4c, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "nav__breadcrumb" }, [
-    _c(
-      "div",
-      { staticClass: "breadcrumb__content" },
-      _vm._l(_vm.breadcrumb, function(node, index) {
-        return _vm.breadcrumb.length
-          ? _c("div", { key: node.getId(), staticClass: "breadcrumb__item" }, [
-              _c(
-                "span",
-                {
-                  staticClass: "breadcrumb__name",
-                  class: { selected: _vm.isLast(index) },
-                  on: {
-                    click: function($event) {
-                      _vm.goTo(node)
-                    }
-                  }
-                },
-                [_vm._v(_vm._s(node.name))]
-              ),
-              _vm._v(" "),
-              !_vm.isLast(index)
-                ? _c("i", { staticClass: "breadcrumb__icon fa fa-angle-right" })
-                : _vm._e()
-            ])
-          : _vm._e()
-      })
-    )
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: null,
-            functional: undefined
-          };
-        })());
-      
-},{"vuex":16}],37:[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-//
-//
-//
-//
-//
-//
-//
-//
-
-exports.default = {
-    name: "Search"
-};
-      var $a41207 = exports.default || module.exports;
-      if (typeof $a41207 === 'function') {
-        $a41207 = $a41207.options;
-      }
-    
-        /* template */
-        Object.assign($a41207, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "nav__search" }, [
-      _c("div", { staticClass: "search__content" }, [
-        _c("input", { attrs: { id: "search", name: "search", type: "text" } })
-      ])
-    ])
-  }
-]
-render._withStripped = true
-
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: null,
-            functional: undefined
-          };
-        })());
-      
-},{}],21:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _Actions = require('./Header/Actions');
-
-var _Actions2 = _interopRequireDefault(_Actions);
-
-var _Breadcrumb = require('./Header/Breadcrumb');
-
-var _Breadcrumb2 = _interopRequireDefault(_Breadcrumb);
-
-var _Search = require('./Header/Search');
-
-var _Search2 = _interopRequireDefault(_Search);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    name: "Nav",
-    components: { Actions: _Actions2.default, Breadcrumb: _Breadcrumb2.default, Search: _Search2.default }
-}; //
-//
-//
-//
-//
-//
-//
-//
-      var $b366cf = exports.default || module.exports;
-      if (typeof $b366cf === 'function') {
-        $b366cf = $b366cf.options;
-      }
-    
-        /* template */
-        Object.assign($b366cf, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "nav",
-    { staticClass: "explorer__nav" },
-    [_c("Actions"), _vm._v(" "), _c("Breadcrumb"), _vm._v(" "), _c("Search")],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: null,
-            functional: undefined
-          };
-        })());
-      
-},{"./Header/Actions":35,"./Header/Breadcrumb":36,"./Header/Search":37}],39:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var _vuex = require('vuex');
-
-exports.default = {
-    name: "Item",
-    props: {
-        node: {
-            type: Object,
-            default: {}
-        }
-    },
-    data: function data() {
-        return {
-            opened: false
-        };
-    },
-
-    computed: _extends({}, (0, _vuex.mapGetters)(['item']), {
-        isActive: function isActive() {
-            return this.item !== null && this.item.getId() === this.node.getId();
-        },
-        paddingShift: function paddingShift() {
-            return 10 * (this.node.depth() + 1) + 'px';
-        }
-    }),
-    methods: _extends({}, (0, _vuex.mapActions)(['toggleOpened', 'setItem']), {
-        getChildren: function getChildren() {
-            this.toggleOpened(this.node.getId());
-            this.opened = !this.opened;
-        },
-        displayContent: function displayContent() {
-            this.setItem(this.node);
-        }
-    })
-};
-      var $32a970 = exports.default || module.exports;
-      if (typeof $32a970 === 'function') {
-        $32a970 = $32a970.options;
-      }
-    
-        /* template */
-        Object.assign($32a970, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    {
-      staticClass: "explorer__item",
-      class: { opened: _vm.opened, active: _vm.isActive }
-    },
-    [
-      _c(
-        "div",
-        {
-          staticClass: "item__wrapper",
-          style: { marginLeft: _vm.paddingShift }
-        },
-        [
-          _c("i", {
-            staticClass: "item__caret fa fa-caret-right",
-            on: {
-              click: function($event) {
-                _vm.getChildren()
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "a",
-            {
-              staticClass: "item__content",
-              on: {
-                click: function($event) {
-                  _vm.displayContent()
+    var _extends = Object.assign || function (target) {
+        for (var i = 1; i < arguments.length; i++) {
+            var source = arguments[i];for (var key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                    target[key] = source[key];
                 }
-              }
-            },
-            [
-              _c("i", { staticClass: "item__icon fa fa-folder" }),
-              _vm._v(" "),
-              _c("span", { staticClass: "item__name" }, [
-                _vm._v(_vm._s(_vm.node.name))
-              ])
-            ]
-          )
-        ]
-      )
-    ]
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: "data-v-32a970",
-            functional: undefined
-          };
-        })());
-      
-},{"vuex":16}],38:[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _Item = require("./Item");
-
-var _Item2 = _interopRequireDefault(_Item);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    name: "List",
-    components: { Item: _Item2.default },
-    props: {
-        list: {
-            type: Array,
-            default: function _default() {
-                return [];
             }
+        }return target;
+    };
+
+    var _vuex = require('vuex');
+
+    exports.default = {
+        name: "Actions",
+        methods: _extends({}, (0, _vuex.mapActions)(['setItem']), {
+            getParentItem: function getParentItem() {
+                this.setItem(this.parentItem);
+            },
+            getRootItem: function getRootItem() {
+                this.setItem(this.rootItem);
+            }
+        }),
+        computed: _extends({}, (0, _vuex.mapGetters)(['parentItem', 'rootItem']))
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
+}
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "nav__actions" }, [_c('div', { staticClass: "actions__left" }, [_c('button', { staticClass: "action__button action__prev", on: { "click": function click($event) {
+                _vm.getParentItem();
+            } } }, [_c('i', { staticClass: "fa fa-arrow-left" })]), _vm._v(" "), _vm._m(0), _vm._v(" "), _vm._m(1)]), _vm._v(" "), _c('div', { staticClass: "actions__right" }, [_c('button', { staticClass: "action__button action__up", on: { "click": function click($event) {
+                _vm.getRootItem();
+            } } }, [_c('i', { staticClass: "fa fa-arrow-up" })])])]);
+};
+__vue__options__.staticRenderFns = [function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('button', { staticClass: "action__button action__next" }, [_c('i', { staticClass: "fa fa-arrow-right" })]);
+}, function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('button', { staticClass: "action__button action__undo" }, [_c('i', { staticClass: "fa fa-undo" })]);
+}];
+__vue__options__._scopeId = "data-v-3f1e174c";
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-3f1e174c", __vue__options__);
+        } else {
+            hotAPI.reload("data-v-3f1e174c", __vue__options__);
         }
+    })();
+}
+},{"vuex":10,"vue-hot-reload-api":11,"vue":5}],14:[function(require,module,exports) {
+;(function () {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+
+    var _extends = Object.assign || function (target) {
+        for (var i = 1; i < arguments.length; i++) {
+            var source = arguments[i];for (var key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                    target[key] = source[key];
+                }
+            }
+        }return target;
+    };
+
+    var _vuex = require('vuex');
+
+    exports.default = {
+        name: "Breadcrumb",
+        methods: _extends({}, (0, _vuex.mapActions)(['setItem']), {
+            isLast: function isLast(index) {
+                return index === this.breadcrumb.length - 1;
+            },
+            goTo: function goTo(node) {
+                this.setItem(node);
+            }
+        }),
+        computed: _extends({}, (0, _vuex.mapGetters)(['breadcrumb']))
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
+}
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "nav__breadcrumb" }, [_c('div', { staticClass: "breadcrumb__content" }, _vm._l(_vm.breadcrumb, function (node, index) {
+        return _vm.breadcrumb.length ? _c('div', { key: node.getId(), staticClass: "breadcrumb__item" }, [_c('span', { staticClass: "breadcrumb__name", class: { 'selected': _vm.isLast(index) }, on: { "click": function click($event) {
+                    _vm.goTo(node);
+                } } }, [_vm._v(_vm._s(node.name))]), _vm._v(" "), !_vm.isLast(index) ? _c('i', { staticClass: "breadcrumb__icon fa fa-angle-right" }) : _vm._e()]) : _vm._e();
+    }))]);
+};
+__vue__options__.staticRenderFns = [];
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-25180784", __vue__options__);
+        } else {
+            hotAPI.reload("data-v-25180784", __vue__options__);
+        }
+    })();
+}
+},{"vuex":10,"vue-hot-reload-api":11,"vue":5}],15:[function(require,module,exports) {
+;(function () {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = {
+        name: "Search"
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
+}
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _vm._m(0);
+};
+__vue__options__.staticRenderFns = [function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "nav__search" }, [_c('div', { staticClass: "search__content" }, [_c('input', { attrs: { "id": "search", "name": "search", "type": "text" } })])]);
+}];
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-77f101ae", __vue__options__);
+        } else {
+            hotAPI.reload("data-v-77f101ae", __vue__options__);
+        }
+    })();
+}
+},{"vue-hot-reload-api":11,"vue":5}],8:[function(require,module,exports) {
+;(function () {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+
+    var _Actions = require('./Header/Actions.vue');
+
+    var _Actions2 = _interopRequireDefault(_Actions);
+
+    var _Breadcrumb = require('./Header/Breadcrumb.vue');
+
+    var _Breadcrumb2 = _interopRequireDefault(_Breadcrumb);
+
+    var _Search = require('./Header/Search.vue');
+
+    var _Search2 = _interopRequireDefault(_Search);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
     }
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-      var $5a8088 = exports.default || module.exports;
-      if (typeof $5a8088 === 'function') {
-        $5a8088 = $5a8088.options;
-      }
-    
-        /* template */
-        Object.assign($5a8088, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "explorer__list" },
-    _vm._l(_vm.list, function(node) {
-      return _vm.list.length && node.type === "folder"
-        ? _c(
-            "div",
-            {
-              key: node.getId(),
-              staticClass: "explorer__item",
-              class: { root__item: !node.hasRootNode() }
-            },
-            [
-              _c("Item", { attrs: { node: node } }),
-              _vm._v(" "),
-              _c("List", {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.$store.getters.hasOpened(node.getId()),
-                    expression: "$store.getters.hasOpened(node.getId())"
-                  }
-                ],
-                attrs: { list: node.childNodes() }
-              })
-            ],
-            1
-          )
-        : _vm._e()
-    })
-  )
+
+    exports.default = {
+        name: "Nav",
+        components: { Actions: _Actions2.default, Breadcrumb: _Breadcrumb2.default, Search: _Search2.default }
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
 }
-var staticRenderFns = []
-render._withStripped = true
-
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: null,
-            functional: undefined
-          };
-        })());
-      
-},{"./Item":39}],40:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var _vuex = require('vuex');
-
-exports.default = {
-    name: "Details",
-    methods: {
-        date: function date(ts) {
-            if (!ts) return '';
-            var d = new Date(ts);
-            var seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
-            var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
-            var hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
-            var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
-            var month = d.getMonth() < 10 ? '0' + d.getMonth() : d.getMonth();
-            return day + '/' + month + '/' + d.getFullYear() + ' ' + hours + ':' + minutes + ':' + seconds;
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('nav', { staticClass: "explorer__nav" }, [_c('Actions'), _vm._v(" "), _c('Breadcrumb'), _vm._v(" "), _c('Search')], 1);
+};
+__vue__options__.staticRenderFns = [];
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-57ca7902", __vue__options__);
+        } else {
+            hotAPI.reload("data-v-57ca7902", __vue__options__);
         }
-    },
-    computed: _extends({}, (0, _vuex.mapGetters)(['selected', 'hasSelected', 'icon']), {
-        dimensions: function dimensions() {
-            if (!this.selected || !this.selected.dimensions || this.selected.type !== 'image') return;
-            var dimensions = this.selected.dimensions;
-            return dimensions[0] + ' x ' + dimensions[1];
-        },
-        size: function size() {
-            if (!this.selected || !this.selected.size) return;
-            var unit = 'Mo';
-            var size = (1048576 / this.selected.size).toFixed(2);
-            if (size < 1) {
-                unit = 'Ko';
-                size = Math.round(size * 1000);
-            } else if (size >= 1000) {
-                unit = 'Go';
-                size = (size / 1000).toFixed(2);
+    })();
+}
+},{"./Header/Actions.vue":13,"./Header/Breadcrumb.vue":14,"./Header/Search.vue":15,"vue-hot-reload-api":11,"vue":5}],24:[function(require,module,exports) {
+;(function () {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+
+    var _extends = Object.assign || function (target) {
+        for (var i = 1; i < arguments.length; i++) {
+            var source = arguments[i];for (var key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                    target[key] = source[key];
+                }
             }
-            return size + ' ' + unit;
+        }return target;
+    };
+
+    var _vuex = require('vuex');
+
+    exports.default = {
+        name: "Item",
+        props: {
+            node: {
+                type: Object,
+                default: {}
+            }
         },
-        createdAt: function createdAt() {
-            if (!this.selected || !this.selected.created_at) return;
-            return this.date(this.selected.created_at);
+        data: function data() {
+            return {
+                opened: false
+            };
         },
-        updatedAt: function updatedAt() {
-            if (!this.selected || !this.selected.updated_at) return;
-            return this.date(this.selected.updated_at);
-        }
-    })
+
+        computed: _extends({}, (0, _vuex.mapGetters)(['item']), {
+            isActive: function isActive() {
+                return this.item !== null && this.item.getId() === this.node.getId();
+            },
+            paddingShift: function paddingShift() {
+                return 10 * (this.node.depth() + 1) + 'px';
+            }
+        }),
+        methods: _extends({}, (0, _vuex.mapActions)(['toggleOpened', 'setItem']), {
+            getChildren: function getChildren() {
+                this.toggleOpened(this.node.getId());
+                this.opened = !this.opened;
+            },
+            displayContent: function displayContent() {
+                this.setItem(this.node);
+            }
+        })
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
+}
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "explorer__item", class: { 'opened': _vm.opened, 'active': _vm.isActive } }, [_c('div', { staticClass: "item__wrapper", style: { marginLeft: _vm.paddingShift } }, [_c('i', { staticClass: "item__caret fa fa-caret-right", on: { "click": function click($event) {
+                _vm.getChildren();
+            } } }), _vm._v(" "), _c('a', { staticClass: "item__content", on: { "click": function click($event) {
+                _vm.displayContent();
+            } } }, [_c('i', { staticClass: "item__icon fa fa-folder" }), _vm._v(" "), _c('span', { staticClass: "item__name" }, [_vm._v(_vm._s(_vm.node.name))])])])]);
 };
-      var $feeae9 = exports.default || module.exports;
-      if (typeof $feeae9 === 'function') {
-        $feeae9 = $feeae9.options;
-      }
-    
-        /* template */
-        Object.assign($feeae9, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "explorer__file_details" }, [
-    _vm.hasSelected
-      ? _c("div", { staticClass: "file_details__container" }, [
-          _vm.selected.type === "image"
-            ? _c("img", {
-                staticClass: "details__image",
-                attrs: { src: _vm.selected.url, alt: _vm.selected.name }
-              })
-            : _c("div", {
-                staticClass: "details__icon",
-                class: _vm.icon(_vm.selected)
-              }),
-          _vm._v(" "),
-          _c("div", { staticClass: "details__info" }, [
-            _c("h5", { staticClass: "info__name" }, [
-              _vm._v(_vm._s(_vm.selected.title))
-            ]),
-            _vm._v(" "),
-            _c("span", { staticClass: "info__type" }, [
-              _vm._v(_vm._s(_vm.selected.type))
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "details__credentials" }, [
-            _c("h5", { staticClass: "credentials__title" }, [_vm._v("Infos")]),
-            _vm._v(" "),
-            _c("table", { staticClass: "credentials__table" }, [
-              _c("tr", { staticClass: "credentials__table__row" }, [
-                _c("td", { staticClass: "credentials__table__row__title" }, [
-                  _vm._v("Created")
-                ]),
-                _vm._v(" "),
-                _c("td", { staticClass: "credentials__table__row__value" }, [
-                  _vm._v(_vm._s(_vm.createdAt))
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tr", { staticClass: "credentials__table__row" }, [
-                _c("td", { staticClass: "credentials__table__row__title" }, [
-                  _vm._v("Modified")
-                ]),
-                _vm._v(" "),
-                _c("td", { staticClass: "credentials__table__row__value" }, [
-                  _vm._v(_vm._s(_vm.createdAt))
-                ])
-              ]),
-              _vm._v(" "),
-              _vm.selected.type === "image"
-                ? _c("tr", { staticClass: "credentials__table__row" }, [
-                    _c(
-                      "td",
-                      { staticClass: "credentials__table__row__title" },
-                      [_vm._v("Dimensions")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "td",
-                      { staticClass: "credentials__table__row__value" },
-                      [_vm._v(_vm._s(_vm.dimensions))]
-                    )
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _c("tr", { staticClass: "credentials__table__row" }, [
-                _c("td", { staticClass: "credentials__table__row__title" }, [
-                  _vm._v("Size")
-                ]),
-                _vm._v(" "),
-                _c("td", { staticClass: "credentials__table__row__value" }, [
-                  _vm._v(_vm._s(_vm.size))
-                ])
-              ]),
-              _vm._v(" "),
-              _vm.selected.author
-                ? _c("tr", { staticClass: "credentials__table__row" }, [
-                    _c(
-                      "td",
-                      { staticClass: "credentials__table__row__title" },
-                      [_vm._v("Author")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "td",
-                      { staticClass: "credentials__table__row__value" },
-                      [_vm._v(_vm._s(_vm.selected.author))]
-                    )
-                  ])
-                : _vm._e()
-            ])
-          ])
-        ])
-      : _vm._e()
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: "data-v-feeae9",
-            functional: undefined
-          };
-        })());
-      
-},{"vuex":16}],34:[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var _Details = require('./Details');
-
-var _Details2 = _interopRequireDefault(_Details);
-
-var _vuex = require('vuex');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    name: "Explorer",
-    components: { Details: _Details2.default },
-    computed: (0, _vuex.mapGetters)(['item', 'selected', 'hasSelected', 'icon']),
-    methods: _extends({}, (0, _vuex.mapActions)(['setItem', 'setSelectedFile']), {
-        getContent: function getContent(item) {
-            if (item.type === 'folder') this.setItem(item);else this.setSelectedFile(item);
+__vue__options__.staticRenderFns = [];
+__vue__options__._scopeId = "data-v-ce6635ba";
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-ce6635ba", __vue__options__);
+        } else {
+            hotAPI.reload("data-v-ce6635ba", __vue__options__);
         }
-    })
+    })();
+}
+},{"vuex":10,"vue-hot-reload-api":11,"vue":5}],16:[function(require,module,exports) {
+;(function () {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+
+    var _Item = require("./Item.vue");
+
+    var _Item2 = _interopRequireDefault(_Item);
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+    }
+
+    exports.default = {
+        name: "List",
+        components: { Item: _Item2.default },
+        props: {
+            list: {
+                type: Array,
+                default: function _default() {
+                    return [];
+                }
+            }
+        }
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
+}
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "explorer__list" }, _vm._l(_vm.list, function (node) {
+        return _vm.list.length && node.type === 'folder' ? _c('div', { key: node.getId(), staticClass: "explorer__item", class: { 'root__item': !node.hasRootNode() } }, [_c('Item', { attrs: { "node": node } }), _vm._v(" "), _c('List', { directives: [{ name: "show", rawName: "v-show", value: _vm.$store.getters.hasOpened(node.getId()), expression: "$store.getters.hasOpened(node.getId())" }], attrs: { "list": node.childNodes() } })], 1) : _vm._e();
+    }));
 };
-      var $db2f59 = exports.default || module.exports;
-      if (typeof $db2f59 === 'function') {
-        $db2f59 = $db2f59.options;
-      }
-    
-        /* template */
-        Object.assign($db2f59, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "article",
-    { staticClass: "explorer__content" },
-    [
-      _c("div", { staticClass: "explorer__file_listing" }, [
-        _vm.item !== null
-          ? _c(
-              "div",
-              { staticClass: "file_listing__container" },
-              _vm._l(_vm.item.childNodes(), function(node, index) {
-                return _vm.item.hasChildNodes()
-                  ? _c(
-                      "div",
-                      {
-                        key: index,
-                        staticClass: "explorer__file",
-                        class: {
-                          active:
-                            _vm.hasSelected &&
-                            node.getId() === _vm.selected.getId()
-                        },
-                        attrs: { title: node.name },
-                        on: {
-                          click: function($event) {
-                            _vm.getContent(node)
-                          }
-                        }
-                      },
-                      [
-                        node.type === "image"
-                          ? _c("div", {
-                              staticClass: "file__thumbnail",
-                              style: {
-                                backgroundImage: "url(" + node.url + ")"
-                              }
-                            })
-                          : _c("i", {
-                              staticClass: "file__icon",
-                              class: _vm.icon(node)
-                            }),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "file__name" }, [
-                          _vm._v(_vm._s(node.name))
-                        ])
-                      ]
-                    )
-                  : _vm._e()
-              })
-            )
-          : _vm._e()
-      ]),
-      _vm._v(" "),
-      _c("Details")
-    ],
-    1
-  )
+__vue__options__.staticRenderFns = [];
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-ba5b45a4", __vue__options__);
+        } else {
+            hotAPI.reload("data-v-ba5b45a4", __vue__options__);
+        }
+    })();
 }
-var staticRenderFns = []
-render._withStripped = true
+},{"./Item.vue":24,"vue-hot-reload-api":11,"vue":5}],26:[function(require,module,exports) {
+;(function () {
+    'use strict';
 
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: "data-v-db2f59",
-            functional: undefined
-          };
-        })());
-      
-},{"./Details":40,"vuex":16}],22:[function(require,module,exports) {
-'use strict';
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+    var _extends = Object.assign || function (target) {
+        for (var i = 1; i < arguments.length; i++) {
+            var source = arguments[i];for (var key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                    target[key] = source[key];
+                }
+            }
+        }return target;
+    };
 
-var _List = require('./Tree/List');
+    var _vuex = require('vuex');
 
-var _List2 = _interopRequireDefault(_List);
-
-var _Explorer = require('./Explorer');
-
-var _Explorer2 = _interopRequireDefault(_Explorer);
-
-var _vuex = require('vuex');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    name: "Main",
-    components: { List: _List2.default, Explorer: _Explorer2.default },
-    computed: (0, _vuex.mapGetters)(['collection']),
-    methods: (0, _vuex.mapActions)(['setItem', 'setSelectedFile'])
-}; //
-//
-//
-//
-//
-//
-//
-//
-//
-      var $270828 = exports.default || module.exports;
-      if (typeof $270828 === 'function') {
-        $270828 = $270828.options;
-      }
-    
-        /* template */
-        Object.assign($270828, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "section",
-    { staticClass: "explorer__body" },
-    [
-      _c(
-        "aside",
-        { staticClass: "explorer__tree" },
-        [_c("List", { attrs: { list: _vm.collection } })],
-        1
-      ),
-      _vm._v(" "),
-      _c("Explorer")
-    ],
-    1
-  )
+    exports.default = {
+        name: "Details",
+        methods: {
+            date: function date(ts) {
+                if (!ts) return '';
+                var d = new Date(ts);
+                var seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
+                var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+                var hours = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+                var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
+                var month = d.getMonth() < 10 ? '0' + d.getMonth() : d.getMonth();
+                return day + '/' + month + '/' + d.getFullYear() + ' ' + hours + ':' + minutes + ':' + seconds;
+            }
+        },
+        computed: _extends({}, (0, _vuex.mapGetters)(['selected', 'hasSelected', 'icon']), {
+            dimensions: function dimensions() {
+                if (!this.selected || !this.selected.dimensions || this.selected.type !== 'image') return;
+                var dimensions = this.selected.dimensions;
+                return dimensions[0] + ' x ' + dimensions[1];
+            },
+            size: function size() {
+                if (!this.selected || !this.selected.size) return;
+                var unit = 'Mo';
+                var size = (1048576 / this.selected.size).toFixed(2);
+                if (size < 1) {
+                    unit = 'Ko';
+                    size = Math.round(size * 1000);
+                } else if (size >= 1000) {
+                    unit = 'Go';
+                    size = (size / 1000).toFixed(2);
+                }
+                return size + ' ' + unit;
+            },
+            createdAt: function createdAt() {
+                if (!this.selected || !this.selected.created_at) return;
+                return this.date(this.selected.created_at);
+            },
+            updatedAt: function updatedAt() {
+                if (!this.selected || !this.selected.updated_at) return;
+                return this.date(this.selected.updated_at);
+            }
+        })
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
 }
-var staticRenderFns = []
-render._withStripped = true
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "explorer__file_details" }, [_vm.hasSelected ? _c('div', { staticClass: "file_details__container" }, [_vm.selected.type === 'image' ? _c('img', { staticClass: "details__image", attrs: { "src": _vm.selected.url, "alt": _vm.selected.name } }) : _c('div', { staticClass: "details__icon", class: _vm.icon(_vm.selected) }), _vm._v(" "), _c('div', { staticClass: "details__info" }, [_c('h5', { staticClass: "info__name" }, [_vm._v(_vm._s(_vm.selected.title))]), _vm._v(" "), _c('span', { staticClass: "info__type" }, [_vm._v(_vm._s(_vm.selected.type))])]), _vm._v(" "), _c('div', { staticClass: "details__credentials" }, [_c('h5', { staticClass: "credentials__title" }, [_vm._v("Infos")]), _vm._v(" "), _c('table', { staticClass: "credentials__table" }, [_c('tr', { staticClass: "credentials__table__row" }, [_c('td', { staticClass: "credentials__table__row__title" }, [_vm._v("Created")]), _vm._v(" "), _c('td', { staticClass: "credentials__table__row__value" }, [_vm._v(_vm._s(_vm.createdAt))])]), _vm._v(" "), _c('tr', { staticClass: "credentials__table__row" }, [_c('td', { staticClass: "credentials__table__row__title" }, [_vm._v("Modified")]), _vm._v(" "), _c('td', { staticClass: "credentials__table__row__value" }, [_vm._v(_vm._s(_vm.createdAt))])]), _vm._v(" "), _vm.selected.type === 'image' ? _c('tr', { staticClass: "credentials__table__row" }, [_c('td', { staticClass: "credentials__table__row__title" }, [_vm._v("Dimensions")]), _vm._v(" "), _c('td', { staticClass: "credentials__table__row__value" }, [_vm._v(_vm._s(_vm.dimensions))])]) : _vm._e(), _vm._v(" "), _c('tr', { staticClass: "credentials__table__row" }, [_c('td', { staticClass: "credentials__table__row__title" }, [_vm._v("Size")]), _vm._v(" "), _c('td', { staticClass: "credentials__table__row__value" }, [_vm._v(_vm._s(_vm.size))])]), _vm._v(" "), _vm.selected.author ? _c('tr', { staticClass: "credentials__table__row" }, [_c('td', { staticClass: "credentials__table__row__title" }, [_vm._v("Author")]), _vm._v(" "), _c('td', { staticClass: "credentials__table__row__value" }, [_vm._v(_vm._s(_vm.selected.author))])]) : _vm._e()])])]) : _vm._e()]);
+};
+__vue__options__.staticRenderFns = [];
+__vue__options__._scopeId = "data-v-514941be";
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-514941be", __vue__options__);
+        } else {
+            hotAPI.reload("data-v-514941be", __vue__options__);
+        }
+    })();
+}
+},{"vuex":10,"vue-hot-reload-api":11,"vue":5}],12:[function(require,module,exports) {
+;(function () {
+    'use strict';
 
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: null,
-            functional: undefined
-          };
-        })());
-      
-},{"./Tree/List":38,"./Explorer":34,"vuex":16}],27:[function(require,module,exports) {
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+
+    var _extends = Object.assign || function (target) {
+        for (var i = 1; i < arguments.length; i++) {
+            var source = arguments[i];for (var key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                    target[key] = source[key];
+                }
+            }
+        }return target;
+    };
+
+    var _Details = require('./Details.vue');
+
+    var _Details2 = _interopRequireDefault(_Details);
+
+    var _vuex = require('vuex');
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+    }
+
+    exports.default = {
+        name: "Explorer",
+        components: { Details: _Details2.default },
+        computed: (0, _vuex.mapGetters)(['item', 'selected', 'hasSelected', 'icon']),
+        methods: _extends({}, (0, _vuex.mapActions)(['setItem', 'setSelectedFile']), {
+            getContent: function getContent(item) {
+                if (item.type === 'folder') this.setItem(item);else this.setSelectedFile(item);
+            }
+        })
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
+}
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('article', { staticClass: "explorer__content" }, [_c('div', { staticClass: "explorer__file_listing" }, [_vm.item !== null ? _c('div', { staticClass: "file_listing__container" }, _vm._l(_vm.item.childNodes(), function (node, index) {
+        return _vm.item.hasChildNodes() ? _c('div', { key: index, staticClass: "explorer__file", class: { 'active': _vm.hasSelected && node.getId() === _vm.selected.getId() }, attrs: { "title": node.name }, on: { "click": function click($event) {
+                    _vm.getContent(node);
+                } } }, [node.type === 'image' ? _c('div', { staticClass: "file__thumbnail", style: { backgroundImage: 'url(' + node.url + ')' } }) : _c('i', { staticClass: "file__icon", class: _vm.icon(node) }), _vm._v(" "), _c('div', { staticClass: "file__name" }, [_vm._v(_vm._s(node.name))])]) : _vm._e();
+    })) : _vm._e()]), _vm._v(" "), _c('Details')], 1);
+};
+__vue__options__.staticRenderFns = [];
+__vue__options__._scopeId = "data-v-4eec90f0";
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-4eec90f0", __vue__options__);
+        } else {
+            hotAPI.reload("data-v-4eec90f0", __vue__options__);
+        }
+    })();
+}
+},{"./Details.vue":26,"vuex":10,"vue-hot-reload-api":11,"vue":5}],9:[function(require,module,exports) {
+;(function () {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+
+    var _List = require('./Tree/List.vue');
+
+    var _List2 = _interopRequireDefault(_List);
+
+    var _Explorer = require('./Explorer.vue');
+
+    var _Explorer2 = _interopRequireDefault(_Explorer);
+
+    var _vuex = require('vuex');
+
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+    }
+
+    exports.default = {
+        name: "Main",
+        components: { List: _List2.default, Explorer: _Explorer2.default },
+        computed: (0, _vuex.mapGetters)(['collection']),
+        methods: (0, _vuex.mapActions)(['setItem', 'setSelectedFile'])
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
+}
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('section', { staticClass: "explorer__body" }, [_c('aside', { staticClass: "explorer__tree" }, [_c('List', { attrs: { "list": _vm.collection } })], 1), _vm._v(" "), _c('Explorer')], 1);
+};
+__vue__options__.staticRenderFns = [];
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-26d9a5ea", __vue__options__);
+        } else {
+            hotAPI.reload("data-v-26d9a5ea", __vue__options__);
+        }
+    })();
+}
+},{"./Tree/List.vue":16,"./Explorer.vue":12,"vuex":10,"vue-hot-reload-api":11,"vue":5}],6:[function(require,module,exports) {
 module.exports = [
   {
     "type": "folder",
@@ -9446,82 +9257,68 @@ module.exports = [
     "updated_at": 1527247843715
   }
 ];
-},{}],6:[function(require,module,exports) {
-'use strict';
+},{}],4:[function(require,module,exports) {
+;(function () {
+    'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
 
-var _Header = require('./Explorer/Header');
+    var _Header = require('./Explorer/Header.vue');
 
-var _Header2 = _interopRequireDefault(_Header);
+    var _Header2 = _interopRequireDefault(_Header);
 
-var _Nav = require('./Explorer/Nav');
+    var _Nav = require('./Explorer/Nav.vue');
 
-var _Nav2 = _interopRequireDefault(_Nav);
+    var _Nav2 = _interopRequireDefault(_Nav);
 
-var _Main = require('./Explorer/Main');
+    var _Main = require('./Explorer/Main.vue');
 
-var _Main2 = _interopRequireDefault(_Main);
+    var _Main2 = _interopRequireDefault(_Main);
 
-var _vuex = require('vuex');
+    var _vuex = require('vuex');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+    var _collection = require('../collection.json');
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+    var _collection2 = _interopRequireDefault(_collection);
 
-exports.default = {
-    name: "App",
-    components: { Header: _Header2.default, Nav: _Nav2.default, Main: _Main2.default },
-    methods: (0, _vuex.mapActions)(['instanciateTree']),
-    mounted: function mounted() {
-        var collection = require('../collection');
-        this.instanciateTree(collection);
+    function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
     }
-};
-      var $7d97b3 = exports.default || module.exports;
-      if (typeof $7d97b3 === 'function') {
-        $7d97b3 = $7d97b3.options;
-      }
-    
-        /* template */
-        Object.assign($7d97b3, (function () {
-          var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "explorer__wrapper" }, [
-    _c(
-      "div",
-      { staticClass: "explorer__container" },
-      [_c("Header"), _vm._v(" "), _c("Nav"), _vm._v(" "), _c("Main")],
-      1
-    )
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
 
-          return {
-            render: render,
-            staticRenderFns: staticRenderFns,
-            _compiled: true,
-            _scopeId: null,
-            functional: undefined
-          };
-        })());
-      
-},{"./Explorer/Header":20,"./Explorer/Nav":21,"./Explorer/Main":22,"vuex":16,"../collection":27}],13:[function(require,module,exports) {
+    exports.default = {
+        name: "App",
+        components: { Header: _Header2.default, Nav: _Nav2.default, Main: _Main2.default },
+        methods: (0, _vuex.mapActions)(['instanciateTree']),
+        mounted: function mounted() {
+            this.instanciateTree(_collection2.default);
+        }
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
+}
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "explorer__wrapper" }, [_c('div', { staticClass: "explorer__container" }, [_c('Header'), _vm._v(" "), _c('Nav'), _vm._v(" "), _c('Main')], 1)]);
+};
+__vue__options__.staticRenderFns = [];
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-740151a2", __vue__options__);
+        } else {
+            hotAPI.rerender("data-v-740151a2", __vue__options__);
+        }
+    })();
+}
+},{"./Explorer/Header.vue":7,"./Explorer/Nav.vue":8,"./Explorer/Main.vue":9,"vuex":10,"../collection.json":6,"vue-hot-reload-api":11,"vue":5}],21:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9584,7 +9381,7 @@ var icon = exports.icon = function icon() {
         }
     };
 };
-},{}],14:[function(require,module,exports) {
+},{}],22:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9613,7 +9410,7 @@ var toggleOpened = exports.toggleOpened = function toggleOpened(_ref4, id) {
 
     commit('toggleOpened', id);
 };
-},{}],15:[function(require,module,exports) {
+},{}],23:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9636,7 +9433,7 @@ var toggleOpened = exports.toggleOpened = function toggleOpened(state, id) {
         return i !== id;
     });else state.opened.push(id);
 };
-},{}],9:[function(require,module,exports) {
+},{}],17:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9683,14 +9480,14 @@ exports.default = new _vuex2.default.Store({
     actions: actions,
     mutations: mutations
 });
-},{"vue":5,"vuex":16,"./getters":13,"./actions":14,"./mutations":15}],3:[function(require,module,exports) {
+},{"vue":5,"vuex":10,"./getters":21,"./actions":22,"./mutations":23}],3:[function(require,module,exports) {
 'use strict';
 
 var _vue = require('vue');
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _App = require('./components/App');
+var _App = require('./components/App.vue');
 
 var _App2 = _interopRequireDefault(_App);
 
@@ -9707,5 +9504,4 @@ new _vue2.default({
         return h(_App2.default);
     }
 });
-},{"vue":5,"./components/App":6,"./store":9}]},{},[3], null)
-//# sourceMappingURL=/app.3bc3dc93.map
+},{"vue":5,"./components/App.vue":4,"./store":17}]},{},[3])

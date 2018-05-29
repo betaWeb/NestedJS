@@ -247,7 +247,6 @@ class Nested {
      * Retrieve nodes by depth
      * @param {Number} depth
      * @param {Array} data
-     * @param {Number} currentDepth
      * @private
      * @returns {Node[]|[]}
      */
@@ -255,6 +254,7 @@ class Nested {
         let nodes = []
         for (let i = 0; i < data.length; i++) {
             let node = data[i]
+            if (node.depth() > depth) break;
             if (node.depth() === depth) nodes.push(node)
             else if (node.hasChildNodes())
                 nodes = nodes.concat(this._retrieveNodesByDepth(depth, node.childNodes()))

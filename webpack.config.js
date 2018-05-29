@@ -1,7 +1,7 @@
 const config = {
     entry: {
         'Nested': __dirname + '/index.js',
-        // 'app': __dirname + '/public/js/app.js'
+        'main': __dirname + '/public/js/main.js'
     },
     output: {
         path: __dirname + '/build',

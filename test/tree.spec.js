@@ -38,6 +38,12 @@ describe('Tree', () => {
         expect(nodes.length).to.equal(7)
     })
 
+    it('should retrieve depth 2 nodes', () => {
+        let nodes = tree.retrieveNodesByDepth(2)
+        expect(nodes).not.to.be.empty
+        expect(nodes.length).to.equal(6)
+    })
+
     it('should not retrieve depth 4 nodes', () => {
         let nodes = tree.retrieveNodesByDepth(4)
         expect(nodes).to.be.empty

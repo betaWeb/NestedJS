@@ -17,7 +17,7 @@
 </template>
 
 <script>
-    import Details from './Details'
+    import Details from './Details.vue'
     import {mapActions, mapGetters} from 'vuex'
 
     export default {

@@ -9,17 +9,17 @@
 </template>
 
 <script>
-    import Header from './Explorer/Header'
-    import Nav from './Explorer/Nav'
-    import Main from './Explorer/Main'
+    import Header from './Explorer/Header.vue'
+    import Nav from './Explorer/Nav.vue'
+    import Main from './Explorer/Main.vue'
     import {mapActions} from 'vuex'
+    import collection from '../collection.json'
 
     export default {
         name: "App",
         components: {Header, Nav, Main},
         methods: mapActions(['instanciateTree']),
         mounted() {
-            let collection = require('../collection')
             this.instanciateTree(collection)
         }
     }
