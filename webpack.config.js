@@ -1,14 +1,20 @@
-const libraryName = 'Nested'
-const outputFile = `${libraryName}.min.js`
-
 const config = {
-    entry: __dirname + '/index.js',
+    entry: {
+        'Nested': __dirname + '/index.js',
+        // 'app': __dirname + '/public/js/app.js'
+    },
     output: {
         path: __dirname + '/build',
-        filename: outputFile,
-        library: libraryName,
+        filename: '[name].min.js',
+        library: '[name]',
         libraryTarget: 'umd',
         umdNamedDefine: true
+    },
+    module: {
+        rules: [{
+            test: /\.vue$/,
+            loader: 'vue-loader'
+        }]
     }
 }
 
