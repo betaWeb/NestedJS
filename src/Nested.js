@@ -165,6 +165,8 @@ class Nested {
      * @returns {Node[]}
      */
     buildTree(data = [], parentid = null, rootid = null, depth = 0) {
+        if (parentid === null) depth = 0
+        else depth += 1
         let tree = data.reduce((acc, node) => {
             if (node.constructor !== Node)
                 node = new Node(node, this._uniqueid)
@@ -174,18 +176,17 @@ class Nested {
 
             if (parentid === null) {
                 rootid = node.getId()
-                depth = 0
                 node.setProperty(properties.root_id, null)
             } else node.setProperty(properties.root_id, rootid)
 
-            if (node.hasChildNodes()) {
-                node.setProperty(this.options.children_key, this.buildTree(node.childNodes(), node.getId(), rootid, depth += 1))
-            }
+            if (node.hasChildNodes())
+                node.setProperty(this.options.children_key, this.buildTree(node.childNodes(), node.getId(), rootid, depth))
 
             acc.push(node)
 
             return acc
         }, [])
+
         for (let i = 0; i < tree.length; i++) {
             let hasPreviousNode = tree[i - 1] !== undefined && tree[i - 1].constructor === Node
             let hasNextNode = tree[i + 1] !== undefined && tree[i + 1].constructor === Node
@@ -250,13 +251,13 @@ class Nested {
      * @private
      * @returns {Node[]|[]}
      */
-    _retrieveNodesByDepth(depth = 0, data = null, currentDepth = 0) {
+    _retrieveNodesByDepth(depth = 0, data = null) {
         let nodes = []
         for (let i = 0; i < data.length; i++) {
             let node = data[i]
-            if (!node.hasParentNode()) currentDepth = 0
-            if (depth === currentDepth) nodes.push(node)
-            else if (node.hasChildNodes()) nodes = nodes.concat(this._retrieveNodesByDepth(depth, node.childNodes(), currentDepth += 1))
+            if (node.depth() === depth) nodes.push(node)
+            else if (node.hasChildNodes())
+                nodes = nodes.concat(this._retrieveNodesByDepth(depth, node.childNodes()))
         }
         return nodes
     }
