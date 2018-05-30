@@ -1,4 +1,7 @@
 # NestedJS
+
+[![Build Status](https://travis-ci.org/betaWeb/NestedJS.svg?branch=master)](https://travis-ci.org/betaWeb/NestedJS)
+
 This library allows you to deal with deep nested arrays in JavaScript.<br>
 Navigate into nested collections can be tricky, so NestedJS try to get it easier.
 
