@@ -13,3 +13,7 @@ export const setSelectedFile = ({ commit }, item) => {
 export const toggleOpened = ({ commit }, id) => {
     commit('toggleOpened', id)
 }
+
+export const toggleMaximize = ({ commit }) => {
+    commit('toggleMaximize')
+}

@@ -12,12 +12,12 @@ $activeColor: #2EA9E2;
 $textColor: #485A64;
 $caretColor: #8FA5B0;
 $wrapperWidth: 1120px;
-$wrapperHeight: 70%;
-$headerHeight: 50px;
 $navHeight: 90px;
 $treeWidth: 260px;
 $fileListingWidth: 500px;
 $detailsListingWidth: 360px;
+$wrapperHeight: 70%;
+$headerHeight: 50px;
 
 * {
   -webkit-box-sizing: border-box;
@@ -45,6 +45,54 @@ html, body {
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   box-shadow: 0 0 16px 6px rgba($blackColor, .1);
+
+  &.full-width {
+    width: 100%;
+    height: 100%;
+    min-width: $wrapperWidth;
+
+    .explorer__container {
+      border-radius: 0;
+    }
+
+    .nav__actions, .nav__search {
+      width: 20%;
+      min-width: $treeWidth;
+    }
+    .nav__breadcrumb {
+      width: 60%;
+    }
+
+    .explorer__body {
+      width: 100%;
+    }
+
+    .explorer__tree {
+      width: 20%;
+      min-width: $treeWidth;
+    }
+    .explorer__content {
+      width: 80%;
+      min-width: $fileListingWidth + $detailsListingWidth;
+
+      .explorer__file_listing {
+        width: 66.6667%;
+        min-width: $fileListingWidth;
+
+        .file_listing__container {
+          width: 100%;
+
+          .explorer__file {
+            width: 20%;
+          }
+        }
+      }
+      .explorer__file_details {
+        width: 33.3334%;
+        min-width: $detailsListingWidth;
+      }
+    }
+  }
 }
 
 .explorer__container {
@@ -65,19 +113,40 @@ html, body {
   height: $headerHeight;
   line-height: $headerHeight;
   background-color: $headerColor;
-  padding: 0 20px;
 
   .header__title {
+    float: left;
     font-size: 1.2em;
     line-height: inherit;
     font-weight: 600;
+    margin-left: 20px;
 
     .header__logo {
       margin-right: .334em;
       color: $navColor;
       line-height: inherit;
-      font-size: 1.5em;
+      font-size: 1.334em;
       vertical-align: bottom;
+    }
+  }
+
+  .header__actions {
+    float: right;
+    width: auto;
+    height: $headerHeight;
+    line-height: $headerHeight;
+
+    .action__maximize {
+      width: $headerHeight;
+      height: inherit;
+      font-size: 1em;
+      text-align: center;
+      color: rgba($whiteColor, .85);
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      outline: none;
+      box-shadow: none;
     }
   }
 }
@@ -354,6 +423,7 @@ html, body {
     .file_details__container {
       display: flex;
       flex-direction: column;
+      height: 100%;
 
       .details__image {
         max-width: 100%;
@@ -372,8 +442,10 @@ html, body {
         padding: 15px 20px;
       }
       .details__info {
+        min-height: 70px;
         border-bottom: 2px solid rgba($caretColor, .1667);
         color: $textColor;
+        overflow: hidden;
 
         .info__name {
           font-size: 16px;
@@ -384,6 +456,10 @@ html, body {
         }
       }
       .details__credentials {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: auto;
+
         .credentials__title {
           color: $textColor;
           font-size: 14px;

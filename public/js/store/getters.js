@@ -25,3 +25,4 @@ export const icon = () => node => {
             return default_icon
     }
 }
+export const windowMaximized = state => state.window_maximized

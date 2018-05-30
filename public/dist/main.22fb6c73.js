@@ -68,7 +68,7 @@ require = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({12:[function(require,module,exports) {
+})({11:[function(require,module,exports) {
 
 // shim for using process in browser
 var process = module.exports = {};
@@ -1439,7 +1439,7 @@ return Promise$1;
 
 //# sourceMappingURL=es6-promise.map
 
-},{"process":12}],7:[function(require,module,exports) {
+},{"process":11}],5:[function(require,module,exports) {
 var global = arguments[3];
 'use strict';
 
@@ -8720,287 +8720,7 @@ if (inBrowser) {
 /*  */
 
 exports.default = Vue;
-},{}],14:[function(require,module,exports) {
-var Vue // late bind
-var version
-var map = (window.__VUE_HOT_MAP__ = Object.create(null))
-var installed = false
-var isBrowserify = false
-var initHookName = 'beforeCreate'
-
-exports.install = function (vue, browserify) {
-  if (installed) { return }
-  installed = true
-
-  Vue = vue.__esModule ? vue.default : vue
-  version = Vue.version.split('.').map(Number)
-  isBrowserify = browserify
-
-  // compat with < 2.0.0-alpha.7
-  if (Vue.config._lifecycleHooks.indexOf('init') > -1) {
-    initHookName = 'init'
-  }
-
-  exports.compatible = version[0] >= 2
-  if (!exports.compatible) {
-    console.warn(
-      '[HMR] You are using a version of vue-hot-reload-api that is ' +
-        'only compatible with Vue.js core ^2.0.0.'
-    )
-    return
-  }
-}
-
-/**
- * Create a record for a hot module, which keeps track of its constructor
- * and instances
- *
- * @param {String} id
- * @param {Object} options
- */
-
-exports.createRecord = function (id, options) {
-  if(map[id]) { return }
-  
-  var Ctor = null
-  if (typeof options === 'function') {
-    Ctor = options
-    options = Ctor.options
-  }
-  makeOptionsHot(id, options)
-  map[id] = {
-    Ctor: Ctor,
-    options: options,
-    instances: []
-  }
-}
-
-/**
- * Check if module is recorded
- *
- * @param {String} id
- */
-
-exports.isRecorded = function (id) {
-  return typeof map[id] !== 'undefined'
-}
-
-/**
- * Make a Component options object hot.
- *
- * @param {String} id
- * @param {Object} options
- */
-
-function makeOptionsHot(id, options) {
-  if (options.functional) {
-    var render = options.render
-    options.render = function (h, ctx) {
-      var instances = map[id].instances
-      if (ctx && instances.indexOf(ctx.parent) < 0) {
-        instances.push(ctx.parent)
-      }
-      return render(h, ctx)
-    }
-  } else {
-    injectHook(options, initHookName, function() {
-      var record = map[id]
-      if (!record.Ctor) {
-        record.Ctor = this.constructor
-      }
-      record.instances.push(this)
-    })
-    injectHook(options, 'beforeDestroy', function() {
-      var instances = map[id].instances
-      instances.splice(instances.indexOf(this), 1)
-    })
-  }
-}
-
-/**
- * Inject a hook to a hot reloadable component so that
- * we can keep track of it.
- *
- * @param {Object} options
- * @param {String} name
- * @param {Function} hook
- */
-
-function injectHook(options, name, hook) {
-  var existing = options[name]
-  options[name] = existing
-    ? Array.isArray(existing) ? existing.concat(hook) : [existing, hook]
-    : [hook]
-}
-
-function tryWrap(fn) {
-  return function (id, arg) {
-    try {
-      fn(id, arg)
-    } catch (e) {
-      console.error(e)
-      console.warn(
-        'Something went wrong during Vue component hot-reload. Full reload required.'
-      )
-    }
-  }
-}
-
-function updateOptions (oldOptions, newOptions) {
-  for (var key in oldOptions) {
-    if (!(key in newOptions)) {
-      delete oldOptions[key]
-    }
-  }
-  for (var key$1 in newOptions) {
-    oldOptions[key$1] = newOptions[key$1]
-  }
-}
-
-exports.rerender = tryWrap(function (id, options) {
-  var record = map[id]
-  if (!options) {
-    record.instances.slice().forEach(function (instance) {
-      instance.$forceUpdate()
-    })
-    return
-  }
-  if (typeof options === 'function') {
-    options = options.options
-  }
-  if (record.Ctor) {
-    record.Ctor.options.render = options.render
-    record.Ctor.options.staticRenderFns = options.staticRenderFns
-    record.instances.slice().forEach(function (instance) {
-      instance.$options.render = options.render
-      instance.$options.staticRenderFns = options.staticRenderFns
-      // reset static trees
-      // pre 2.5, all static trees are cahced together on the instance
-      if (instance._staticTrees) {
-        instance._staticTrees = []
-      }
-      // 2.5.0
-      if (Array.isArray(record.Ctor.options.cached)) {
-        record.Ctor.options.cached = []
-      }
-      // 2.5.3
-      if (Array.isArray(instance.$options.cached)) {
-        instance.$options.cached = []
-      }
-      // post 2.5.4: v-once trees are cached on instance._staticTrees.
-      // Pure static trees are cached on the staticRenderFns array
-      // (both already reset above)
-      instance.$forceUpdate()
-    })
-  } else {
-    // functional or no instance created yet
-    record.options.render = options.render
-    record.options.staticRenderFns = options.staticRenderFns
-
-    // handle functional component re-render
-    if (record.options.functional) {
-      // rerender with full options
-      if (Object.keys(options).length > 2) {
-        updateOptions(record.options, options)
-      } else {
-        // template-only rerender.
-        // need to inject the style injection code for CSS modules
-        // to work properly.
-        var injectStyles = record.options._injectStyles
-        if (injectStyles) {
-          var render = options.render
-          record.options.render = function (h, ctx) {
-            injectStyles.call(ctx)
-            return render(h, ctx)
-          }
-        }
-      }
-      record.options._Ctor = null
-      // 2.5.3
-      if (Array.isArray(record.options.cached)) {
-        record.options.cached = []
-      }
-      record.instances.slice().forEach(function (instance) {
-        instance.$forceUpdate()
-      })
-    }
-  }
-})
-
-exports.reload = tryWrap(function (id, options) {
-  var record = map[id]
-  if (options) {
-    if (typeof options === 'function') {
-      options = options.options
-    }
-    makeOptionsHot(id, options)
-    if (record.Ctor) {
-      if (version[1] < 2) {
-        // preserve pre 2.2 behavior for global mixin handling
-        record.Ctor.extendOptions = options
-      }
-      var newCtor = record.Ctor.super.extend(options)
-      record.Ctor.options = newCtor.options
-      record.Ctor.cid = newCtor.cid
-      record.Ctor.prototype = newCtor.prototype
-      if (newCtor.release) {
-        // temporary global mixin strategy used in < 2.0.0-alpha.6
-        newCtor.release()
-      }
-    } else {
-      updateOptions(record.options, options)
-    }
-  }
-  record.instances.slice().forEach(function (instance) {
-    if (instance.$vnode && instance.$vnode.context) {
-      instance.$vnode.context.$forceUpdate()
-    } else {
-      console.warn(
-        'Root or manually mounted instance modified. Full reload required.'
-      )
-    }
-  })
-})
-
-},{}],9:[function(require,module,exports) {
-;(function () {
-    "use strict";
-
-    Object.defineProperty(exports, "__esModule", {
-        value: true
-    });
-    exports.default = {
-        name: "Header",
-        data: function data() {
-            return {
-                title: 'NestedJS File Explorer'
-            };
-        }
-    };
-})();
-if (module.exports.__esModule) module.exports = module.exports.default;
-var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
-if (__vue__options__.functional) {
-    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
-}
-__vue__options__.render = function render() {
-    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('header', { staticClass: "explorer__header" }, [_c('div', { staticClass: "header__title" }, [_c('i', { staticClass: "header__logo fa fa-folder" }), _vm._v(" " + _vm._s(_vm.title) + "\n    ")])]);
-};
-__vue__options__.staticRenderFns = [];
-if (module.hot) {
-    (function () {
-        var hotAPI = require("vue-hot-reload-api");
-        hotAPI.install(require("vue"), true);
-        if (!hotAPI.compatible) return;
-        module.hot.accept();
-        if (!module.hot.data) {
-            hotAPI.createRecord("data-v-7024d67e", __vue__options__);
-        } else {
-            hotAPI.reload("data-v-7024d67e", __vue__options__);
-        }
-    })();
-}
-},{"vue-hot-reload-api":14,"vue":7}],13:[function(require,module,exports) {
+},{}],12:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9958,7 +9678,294 @@ exports.mapGetters = mapGetters;
 exports.mapActions = mapActions;
 exports.createNamespacedHelpers = createNamespacedHelpers;
 exports.default = index_esm;
-},{}],16:[function(require,module,exports) {
+},{}],13:[function(require,module,exports) {
+var Vue // late bind
+var version
+var map = (window.__VUE_HOT_MAP__ = Object.create(null))
+var installed = false
+var isBrowserify = false
+var initHookName = 'beforeCreate'
+
+exports.install = function (vue, browserify) {
+  if (installed) { return }
+  installed = true
+
+  Vue = vue.__esModule ? vue.default : vue
+  version = Vue.version.split('.').map(Number)
+  isBrowserify = browserify
+
+  // compat with < 2.0.0-alpha.7
+  if (Vue.config._lifecycleHooks.indexOf('init') > -1) {
+    initHookName = 'init'
+  }
+
+  exports.compatible = version[0] >= 2
+  if (!exports.compatible) {
+    console.warn(
+      '[HMR] You are using a version of vue-hot-reload-api that is ' +
+        'only compatible with Vue.js core ^2.0.0.'
+    )
+    return
+  }
+}
+
+/**
+ * Create a record for a hot module, which keeps track of its constructor
+ * and instances
+ *
+ * @param {String} id
+ * @param {Object} options
+ */
+
+exports.createRecord = function (id, options) {
+  if(map[id]) { return }
+  
+  var Ctor = null
+  if (typeof options === 'function') {
+    Ctor = options
+    options = Ctor.options
+  }
+  makeOptionsHot(id, options)
+  map[id] = {
+    Ctor: Ctor,
+    options: options,
+    instances: []
+  }
+}
+
+/**
+ * Check if module is recorded
+ *
+ * @param {String} id
+ */
+
+exports.isRecorded = function (id) {
+  return typeof map[id] !== 'undefined'
+}
+
+/**
+ * Make a Component options object hot.
+ *
+ * @param {String} id
+ * @param {Object} options
+ */
+
+function makeOptionsHot(id, options) {
+  if (options.functional) {
+    var render = options.render
+    options.render = function (h, ctx) {
+      var instances = map[id].instances
+      if (ctx && instances.indexOf(ctx.parent) < 0) {
+        instances.push(ctx.parent)
+      }
+      return render(h, ctx)
+    }
+  } else {
+    injectHook(options, initHookName, function() {
+      var record = map[id]
+      if (!record.Ctor) {
+        record.Ctor = this.constructor
+      }
+      record.instances.push(this)
+    })
+    injectHook(options, 'beforeDestroy', function() {
+      var instances = map[id].instances
+      instances.splice(instances.indexOf(this), 1)
+    })
+  }
+}
+
+/**
+ * Inject a hook to a hot reloadable component so that
+ * we can keep track of it.
+ *
+ * @param {Object} options
+ * @param {String} name
+ * @param {Function} hook
+ */
+
+function injectHook(options, name, hook) {
+  var existing = options[name]
+  options[name] = existing
+    ? Array.isArray(existing) ? existing.concat(hook) : [existing, hook]
+    : [hook]
+}
+
+function tryWrap(fn) {
+  return function (id, arg) {
+    try {
+      fn(id, arg)
+    } catch (e) {
+      console.error(e)
+      console.warn(
+        'Something went wrong during Vue component hot-reload. Full reload required.'
+      )
+    }
+  }
+}
+
+function updateOptions (oldOptions, newOptions) {
+  for (var key in oldOptions) {
+    if (!(key in newOptions)) {
+      delete oldOptions[key]
+    }
+  }
+  for (var key$1 in newOptions) {
+    oldOptions[key$1] = newOptions[key$1]
+  }
+}
+
+exports.rerender = tryWrap(function (id, options) {
+  var record = map[id]
+  if (!options) {
+    record.instances.slice().forEach(function (instance) {
+      instance.$forceUpdate()
+    })
+    return
+  }
+  if (typeof options === 'function') {
+    options = options.options
+  }
+  if (record.Ctor) {
+    record.Ctor.options.render = options.render
+    record.Ctor.options.staticRenderFns = options.staticRenderFns
+    record.instances.slice().forEach(function (instance) {
+      instance.$options.render = options.render
+      instance.$options.staticRenderFns = options.staticRenderFns
+      // reset static trees
+      // pre 2.5, all static trees are cahced together on the instance
+      if (instance._staticTrees) {
+        instance._staticTrees = []
+      }
+      // 2.5.0
+      if (Array.isArray(record.Ctor.options.cached)) {
+        record.Ctor.options.cached = []
+      }
+      // 2.5.3
+      if (Array.isArray(instance.$options.cached)) {
+        instance.$options.cached = []
+      }
+      // post 2.5.4: v-once trees are cached on instance._staticTrees.
+      // Pure static trees are cached on the staticRenderFns array
+      // (both already reset above)
+      instance.$forceUpdate()
+    })
+  } else {
+    // functional or no instance created yet
+    record.options.render = options.render
+    record.options.staticRenderFns = options.staticRenderFns
+
+    // handle functional component re-render
+    if (record.options.functional) {
+      // rerender with full options
+      if (Object.keys(options).length > 2) {
+        updateOptions(record.options, options)
+      } else {
+        // template-only rerender.
+        // need to inject the style injection code for CSS modules
+        // to work properly.
+        var injectStyles = record.options._injectStyles
+        if (injectStyles) {
+          var render = options.render
+          record.options.render = function (h, ctx) {
+            injectStyles.call(ctx)
+            return render(h, ctx)
+          }
+        }
+      }
+      record.options._Ctor = null
+      // 2.5.3
+      if (Array.isArray(record.options.cached)) {
+        record.options.cached = []
+      }
+      record.instances.slice().forEach(function (instance) {
+        instance.$forceUpdate()
+      })
+    }
+  }
+})
+
+exports.reload = tryWrap(function (id, options) {
+  var record = map[id]
+  if (options) {
+    if (typeof options === 'function') {
+      options = options.options
+    }
+    makeOptionsHot(id, options)
+    if (record.Ctor) {
+      if (version[1] < 2) {
+        // preserve pre 2.2 behavior for global mixin handling
+        record.Ctor.extendOptions = options
+      }
+      var newCtor = record.Ctor.super.extend(options)
+      record.Ctor.options = newCtor.options
+      record.Ctor.cid = newCtor.cid
+      record.Ctor.prototype = newCtor.prototype
+      if (newCtor.release) {
+        // temporary global mixin strategy used in < 2.0.0-alpha.6
+        newCtor.release()
+      }
+    } else {
+      updateOptions(record.options, options)
+    }
+  }
+  record.instances.slice().forEach(function (instance) {
+    if (instance.$vnode && instance.$vnode.context) {
+      instance.$vnode.context.$forceUpdate()
+    } else {
+      console.warn(
+        'Root or manually mounted instance modified. Full reload required.'
+      )
+    }
+  })
+})
+
+},{}],8:[function(require,module,exports) {
+;(function () {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+
+    var _vuex = require('vuex');
+
+    exports.default = {
+        name: "Header",
+        data: function data() {
+            return {
+                title: 'NestedJS File Explorer'
+            };
+        },
+
+        methods: (0, _vuex.mapActions)(['toggleMaximize'])
+    };
+})();
+if (module.exports.__esModule) module.exports = module.exports.default;
+var __vue__options__ = typeof module.exports === "function" ? module.exports.options : module.exports;
+if (__vue__options__.functional) {
+    console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
+}
+__vue__options__.render = function render() {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('header', { staticClass: "explorer__header" }, [_c('div', { staticClass: "header__title" }, [_c('i', { staticClass: "header__logo fa fa-folder" }), _vm._v(" " + _vm._s(_vm.title) + "\n    ")]), _vm._v(" "), _c('div', { staticClass: "header__actions" }, [_c('button', { staticClass: "action__maximize", on: { "click": function click($event) {
+                _vm.toggleMaximize();
+            } } }, [_c('i', { staticClass: "fa fa-expand-arrows-alt" })])])]);
+};
+__vue__options__.staticRenderFns = [];
+if (module.hot) {
+    (function () {
+        var hotAPI = require("vue-hot-reload-api");
+        hotAPI.install(require("vue"), true);
+        if (!hotAPI.compatible) return;
+        module.hot.accept();
+        if (!module.hot.data) {
+            hotAPI.createRecord("data-v-7024d67e", __vue__options__);
+        } else {
+            hotAPI.rerender("data-v-7024d67e", __vue__options__);
+        }
+    })();
+}
+},{"vuex":12,"vue-hot-reload-api":13,"vue":5}],15:[function(require,module,exports) {
 ;(function () {
     'use strict';
 
@@ -10022,7 +10029,7 @@ if (module.hot) {
         }
     })();
 }
-},{"vuex":13,"vue-hot-reload-api":14,"vue":7}],17:[function(require,module,exports) {
+},{"vuex":12,"vue-hot-reload-api":13,"vue":5}],16:[function(require,module,exports) {
 ;(function () {
     'use strict';
 
@@ -10081,7 +10088,7 @@ if (module.hot) {
         }
     })();
 }
-},{"vuex":13,"vue-hot-reload-api":14,"vue":7}],18:[function(require,module,exports) {
+},{"vuex":12,"vue-hot-reload-api":13,"vue":5}],17:[function(require,module,exports) {
 ;(function () {
     "use strict";
 
@@ -10116,7 +10123,7 @@ if (module.hot) {
         }
     })();
 }
-},{"vue-hot-reload-api":14,"vue":7}],10:[function(require,module,exports) {
+},{"vue-hot-reload-api":13,"vue":5}],9:[function(require,module,exports) {
 ;(function () {
     'use strict';
 
@@ -10167,7 +10174,7 @@ if (module.hot) {
         }
     })();
 }
-},{"./Header/Actions.vue":16,"./Header/Breadcrumb.vue":17,"./Header/Search.vue":18,"vue-hot-reload-api":14,"vue":7}],25:[function(require,module,exports) {
+},{"./Header/Actions.vue":15,"./Header/Breadcrumb.vue":16,"./Header/Search.vue":17,"vue-hot-reload-api":13,"vue":5}],24:[function(require,module,exports) {
 ;(function () {
     'use strict';
 
@@ -10247,7 +10254,7 @@ if (module.hot) {
         }
     })();
 }
-},{"vuex":13,"vue-hot-reload-api":14,"vue":7}],19:[function(require,module,exports) {
+},{"vuex":12,"vue-hot-reload-api":13,"vue":5}],18:[function(require,module,exports) {
 ;(function () {
     "use strict";
 
@@ -10300,7 +10307,7 @@ if (module.hot) {
         }
     })();
 }
-},{"./Item.vue":25,"vue-hot-reload-api":14,"vue":7}],21:[function(require,module,exports) {
+},{"./Item.vue":24,"vue-hot-reload-api":13,"vue":5}],20:[function(require,module,exports) {
 ;(function () {
     'use strict';
 
@@ -10387,7 +10394,7 @@ if (module.hot) {
         }
     })();
 }
-},{"vuex":13,"vue-hot-reload-api":14,"vue":7}],15:[function(require,module,exports) {
+},{"vuex":12,"vue-hot-reload-api":13,"vue":5}],14:[function(require,module,exports) {
 ;(function () {
     'use strict';
 
@@ -10453,7 +10460,7 @@ if (module.hot) {
         }
     })();
 }
-},{"./Details.vue":21,"vuex":13,"vue-hot-reload-api":14,"vue":7}],11:[function(require,module,exports) {
+},{"./Details.vue":20,"vuex":12,"vue-hot-reload-api":13,"vue":5}],10:[function(require,module,exports) {
 ;(function () {
     'use strict';
 
@@ -10504,7 +10511,7 @@ if (module.hot) {
         }
     })();
 }
-},{"./Tree/List.vue":19,"./Explorer.vue":15,"vuex":13,"vue-hot-reload-api":14,"vue":7}],8:[function(require,module,exports) {
+},{"./Tree/List.vue":18,"./Explorer.vue":14,"vuex":12,"vue-hot-reload-api":13,"vue":5}],7:[function(require,module,exports) {
 module.exports = [
   {
     "type": "folder",
@@ -10628,7 +10635,7 @@ module.exports = [
     "updated_at": 1527247843715
   }
 ];
-},{}],5:[function(require,module,exports) {
+},{}],4:[function(require,module,exports) {
 ;(function () {
     'use strict';
 
@@ -10662,6 +10669,7 @@ module.exports = [
         name: "App",
         components: { Header: _Header2.default, Nav: _Nav2.default, Main: _Main2.default },
         methods: (0, _vuex.mapActions)(['instanciateTree']),
+        computed: (0, _vuex.mapGetters)(['windowMaximized']),
         mounted: function mounted() {
             this.instanciateTree(_collection2.default);
         }
@@ -10673,7 +10681,7 @@ if (__vue__options__.functional) {
     console.error("[vueify] functional components are not supported and should be defined in plain js files using render functions.");
 }
 __vue__options__.render = function render() {
-    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "explorer__wrapper" }, [_c('div', { staticClass: "explorer__container" }, [_c('Header'), _vm._v(" "), _c('Nav'), _vm._v(" "), _c('Main')], 1)]);
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "explorer__wrapper", class: { 'full-width': _vm.windowMaximized } }, [_c('div', { staticClass: "explorer__container" }, [_c('Header'), _vm._v(" "), _c('Nav'), _vm._v(" "), _c('Main')], 1)]);
 };
 __vue__options__.staticRenderFns = [];
 if (module.hot) {
@@ -10689,7 +10697,7 @@ if (module.hot) {
         }
     })();
 }
-},{"./Explorer/Header.vue":9,"./Explorer/Nav.vue":10,"./Explorer/Main.vue":11,"vuex":13,"../collection.json":8,"vue-hot-reload-api":14,"vue":7}],22:[function(require,module,exports) {
+},{"./Explorer/Header.vue":8,"./Explorer/Nav.vue":9,"./Explorer/Main.vue":10,"vuex":12,"../collection.json":7,"vue-hot-reload-api":13,"vue":5}],21:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10752,7 +10760,10 @@ var icon = exports.icon = function icon() {
         }
     };
 };
-},{}],23:[function(require,module,exports) {
+var windowMaximized = exports.windowMaximized = function windowMaximized(state) {
+    return state.window_maximized;
+};
+},{}],22:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10781,12 +10792,21 @@ var toggleOpened = exports.toggleOpened = function toggleOpened(_ref4, id) {
 
     commit('toggleOpened', id);
 };
-},{}],24:[function(require,module,exports) {
+
+var toggleMaximize = exports.toggleMaximize = function toggleMaximize(_ref5) {
+    var commit = _ref5.commit;
+
+    commit('toggleMaximize');
+};
+},{}],23:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 var instanciateTree = exports.instanciateTree = function instanciateTree(state, collection) {
     if (state.tree === null) state.tree = new Nested(collection);
 };
@@ -10802,9 +10822,13 @@ var setSelectedFile = exports.setSelectedFile = function setSelectedFile(state, 
 var toggleOpened = exports.toggleOpened = function toggleOpened(state, id) {
     if (state.opened.includes(id)) state.opened = state.opened.filter(function (i) {
         return i !== id;
-    });else state.opened.push(id);
+    });else state.opened = [].concat(_toConsumableArray(state.opened), [id]);
 };
-},{}],20:[function(require,module,exports) {
+
+var toggleMaximize = exports.toggleMaximize = function toggleMaximize(state) {
+    state.window_maximized = !state.window_maximized;
+};
+},{}],19:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10842,7 +10866,8 @@ var state = {
     tree: null,
     item: null,
     selected: null,
-    opened: []
+    opened: [],
+    window_maximized: false
 };
 
 exports.default = new _vuex2.default.Store({
@@ -10851,7 +10876,7 @@ exports.default = new _vuex2.default.Store({
     actions: actions,
     mutations: mutations
 });
-},{"vue":7,"vuex":13,"./getters":22,"./actions":23,"./mutations":24}],3:[function(require,module,exports) {
+},{"vue":5,"vuex":12,"./getters":21,"./actions":22,"./mutations":23}],3:[function(require,module,exports) {
 'use strict';
 
 require('es6-promise');
@@ -10877,4 +10902,4 @@ new _vue2.default({
         return h(_App2.default);
     }
 });
-},{"es6-promise":6,"vue":7,"./components/App.vue":5,"./store":20}]},{},[3])
+},{"es6-promise":6,"vue":5,"./components/App.vue":4,"./store":19}]},{},[3])

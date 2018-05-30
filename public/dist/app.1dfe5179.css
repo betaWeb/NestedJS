@@ -23,6 +23,35 @@ html, body {
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   box-shadow: 0 0 16px 6px rgba(0, 0, 0, 0.1); }
+  .explorer__wrapper.full-width {
+    width: 100%;
+    height: 100%;
+    min-width: 1120px; }
+    .explorer__wrapper.full-width .explorer__container {
+      border-radius: 0; }
+    .explorer__wrapper.full-width .nav__actions, .explorer__wrapper.full-width .nav__search {
+      width: 20%;
+      min-width: 260px; }
+    .explorer__wrapper.full-width .nav__breadcrumb {
+      width: 60%; }
+    .explorer__wrapper.full-width .explorer__body {
+      width: 100%; }
+    .explorer__wrapper.full-width .explorer__tree {
+      width: 20%;
+      min-width: 260px; }
+    .explorer__wrapper.full-width .explorer__content {
+      width: 80%;
+      min-width: 860px; }
+      .explorer__wrapper.full-width .explorer__content .explorer__file_listing {
+        width: 66.6667%;
+        min-width: 500px; }
+        .explorer__wrapper.full-width .explorer__content .explorer__file_listing .file_listing__container {
+          width: 100%; }
+          .explorer__wrapper.full-width .explorer__content .explorer__file_listing .file_listing__container .explorer__file {
+            width: 20%; }
+      .explorer__wrapper.full-width .explorer__content .explorer__file_details {
+        width: 33.3334%;
+        min-width: 360px; }
 
 .explorer__container {
   display: flex;
@@ -39,18 +68,35 @@ html, body {
 .explorer__header {
   height: 50px;
   line-height: 50px;
-  background-color: #3C4C55;
-  padding: 0 20px; }
+  background-color: #3C4C55; }
   .explorer__header .header__title {
+    float: left;
     font-size: 1.2em;
     line-height: inherit;
-    font-weight: 600; }
+    font-weight: 600;
+    margin-left: 20px; }
     .explorer__header .header__title .header__logo {
       margin-right: .334em;
       color: #556C76;
       line-height: inherit;
-      font-size: 1.5em;
+      font-size: 1.334em;
       vertical-align: bottom; }
+  .explorer__header .header__actions {
+    float: right;
+    width: auto;
+    height: 50px;
+    line-height: 50px; }
+    .explorer__header .header__actions .action__maximize {
+      width: 50px;
+      height: inherit;
+      font-size: 1em;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.85);
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      outline: none;
+      box-shadow: none; }
 
 .explorer__nav {
   display: inline-flex;
@@ -246,7 +292,8 @@ html, body {
     background-color: #E0E8EB; }
     .explorer__content .explorer__file_details .file_details__container {
       display: flex;
-      flex-direction: column; }
+      flex-direction: column;
+      height: 100%; }
       .explorer__content .explorer__file_details .file_details__container .details__image {
         max-width: 100%;
         height: auto; }
@@ -261,31 +308,37 @@ html, body {
       .explorer__content .explorer__file_details .file_details__container .details__info, .explorer__content .explorer__file_details .file_details__container .details__credentials {
         padding: 15px 20px; }
       .explorer__content .explorer__file_details .file_details__container .details__info {
+        min-height: 70px;
         border-bottom: 2px solid rgba(143, 165, 176, 0.1667);
-        color: #485A64; }
+        color: #485A64;
+        overflow: hidden; }
         .explorer__content .explorer__file_details .file_details__container .details__info .info__name {
           font-size: 16px;
           margin: 0; }
         .explorer__content .explorer__file_details .file_details__container .details__info .info__type {
           font-size: 14px; }
-      .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__title {
-        color: #485A64;
-        font-size: 14px;
-        margin-top: 0;
-        margin-bottom: 5px;
-        text-transform: uppercase; }
-      .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table {
-        width: 100%;
-        display: table; }
-        .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__title, .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__value {
-          width: 50%;
-          padding: 5px 7px; }
-        .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__title {
-          text-align: right;
-          text-transform: uppercase;
-          color: #8FA5B0;
-          font-size: 14px;
-          font-weight: 600; }
-        .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__value {
+      .explorer__content .explorer__file_details .file_details__container .details__credentials {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: auto; }
+        .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__title {
           color: #485A64;
-          font-size: 14px; }
+          font-size: 14px;
+          margin-top: 0;
+          margin-bottom: 5px;
+          text-transform: uppercase; }
+        .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table {
+          width: 100%;
+          display: table; }
+          .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__title, .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__value {
+            width: 50%;
+            padding: 5px 7px; }
+          .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__title {
+            text-align: right;
+            text-transform: uppercase;
+            color: #8FA5B0;
+            font-size: 14px;
+            font-weight: 600; }
+          .explorer__content .explorer__file_details .file_details__container .details__credentials .credentials__table .credentials__table__row__value {
+            color: #485A64;
+            font-size: 14px; }

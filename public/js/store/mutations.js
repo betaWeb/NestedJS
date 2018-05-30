@@ -13,5 +13,9 @@ export const setSelectedFile = (state, selected) => {
 export const toggleOpened = (state, id) => {
     if (state.opened.includes(id))
         state.opened = state.opened.filter(i => i !== id)
-    else state.opened.push(id)
+    else state.opened = [...state.opened, id]
+}
+
+export const toggleMaximize = (state) => {
+    state.window_maximized = !state.window_maximized
 }

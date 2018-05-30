@@ -11,7 +11,8 @@ const state = {
     tree: null,
     item: null,
     selected: null,
-    opened: []
+    opened: [],
+    window_maximized: false
 }
 
 export default new Vuex.Store({
