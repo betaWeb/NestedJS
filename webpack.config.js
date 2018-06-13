@@ -1,3 +1,5 @@
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
 const config = {
     entry: {
         'Nested': __dirname + '/index.js',
@@ -11,11 +13,23 @@ const config = {
         umdNamedDefine: true
     },
     module: {
-        rules: [{
-            test: /\.vue$/,
-            loader: 'vue-loader'
-        }]
-    }
+        rules: [
+            {
+                use: {
+                    loader: 'babel-loader',
+                    options: { presets: ['es2015', 'stage-0'] }
+                },
+                test: /\.js$/,
+                exclude: /node_modules/
+            }, {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            }
+        ]
+    },
+    plugins: [
+        new VueLoaderPlugin()
+    ]
 }
 
 module.exports = config
